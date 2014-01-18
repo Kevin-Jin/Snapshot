@@ -35,11 +35,11 @@ namespace Snapshot
 
         }
 
-        Form2 form2 = new Form2();
+        
         private void btnSettings_Click(object sender, EventArgs e)
         {
             
-            form2.Show();
+         
         }
 
         private void lstRecentProjects_DrawItem(object sender, DrawItemEventArgs e)
@@ -52,6 +52,10 @@ namespace Snapshot
             e.Graphics.DrawString(output, e.Font, brush, pos, e.Bounds.Top);
 
         }
+
+     
+
+
 
         
         
