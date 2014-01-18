@@ -88,11 +88,11 @@
             this.lstRecentProjects.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(206)))), ((int)(((byte)(243)))));
             this.lstRecentProjects.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.lstRecentProjects.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
-            this.lstRecentProjects.Font = new System.Drawing.Font("Gill Sans Ultra Bold", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lstRecentProjects.ForeColor = System.Drawing.SystemColors.WindowText;
+            this.lstRecentProjects.Font = new System.Drawing.Font("Gill Sans Ultra Bold", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lstRecentProjects.ForeColor = System.Drawing.Color.Black;
             this.lstRecentProjects.FormattingEnabled = true;
             this.lstRecentProjects.ItemHeight = 18;
-            this.lstRecentProjects.Location = new System.Drawing.Point(2, 298);
+            this.lstRecentProjects.Location = new System.Drawing.Point(2, 311);
             this.lstRecentProjects.Name = "lstRecentProjects";
             this.lstRecentProjects.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.lstRecentProjects.Size = new System.Drawing.Size(293, 108);
@@ -102,10 +102,11 @@
             // lblRecentProjects
             // 
             this.lblRecentProjects.AutoSize = true;
-            this.lblRecentProjects.Font = new System.Drawing.Font("Gill Sans Ultra Bold", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblRecentProjects.Location = new System.Drawing.Point(87, 280);
+            this.lblRecentProjects.Font = new System.Drawing.Font("Gill Sans Ultra Bold", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblRecentProjects.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.lblRecentProjects.Location = new System.Drawing.Point(78, 280);
             this.lblRecentProjects.Name = "lblRecentProjects";
-            this.lblRecentProjects.Size = new System.Drawing.Size(121, 18);
+            this.lblRecentProjects.Size = new System.Drawing.Size(141, 19);
             this.lblRecentProjects.TabIndex = 5;
             this.lblRecentProjects.Text = "Recent projects:";
             // 
@@ -113,11 +114,11 @@
             // 
             this.checkBox1.AutoSize = true;
             this.checkBox1.Font = new System.Drawing.Font("Gill Sans Ultra Bold", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.checkBox1.Location = new System.Drawing.Point(74, 185);
+            this.checkBox1.Location = new System.Drawing.Point(46, 185);
             this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(149, 22);
+            this.checkBox1.Size = new System.Drawing.Size(203, 22);
             this.checkBox1.TabIndex = 6;
-            this.checkBox1.Text = "Close when Saved";
+            this.checkBox1.Text = "Close Project when Saved";
             this.checkBox1.UseVisualStyleBackColor = true;
             // 
             // Main

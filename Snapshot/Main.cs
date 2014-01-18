@@ -33,7 +33,7 @@ namespace Snapshot
             if (lstRecentProjects.SelectedIndex != -1)
                 MessageBox.Show("not implemented yet");
         }
-
+        
         private void btnSettings_Click(object sender, EventArgs e)
         {
             new Form2().Show();
