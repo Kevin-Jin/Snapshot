@@ -24,6 +24,7 @@ namespace Snapshot
                 Console.WriteLine("(No files opened by winword)");
             foreach (var entry in openedFiles)
                 Console.WriteLine(entry.Item1 + ": " + entry.Item2);
+            ConfigDatabase.OpenDatabase();
         }
 
         /// <summary>

@@ -22,7 +22,7 @@ namespace Snapshot
             var output = new StringBuilder();
             var outputReceived = new DataReceivedEventHandler((sendingProcess, outLine) => output.Append(outLine.Data).Append('\n'));
 
-            Process p = new Process();
+            var p = new Process();
             startInfo.FileName = processFileName;
             startInfo.Arguments = arguments;
             p.StartInfo = startInfo;
@@ -56,8 +56,8 @@ namespace Snapshot
         internal static async Task<IList<Tuple<string, FileInfo>>> GetFilesOpenedByProcess(string processName)
         {
             var output = await GetOutput("handle.exe", "-p " + processName);
-            Regex beginFilesList = new Regex("------------------------------------------------------------------------------\r?\n.*?\r?\n", RegexOptions.Multiline | RegexOptions.Compiled);
-            Regex eachFile = new Regex("\\s*?: File  \\((?<permissions>.*?)\\)   (?<file>.*?)\r?\n", RegexOptions.Multiline | RegexOptions.Compiled);
+            var beginFilesList = new Regex("------------------------------------------------------------------------------\r?\n.*?\r?\n", RegexOptions.Multiline | RegexOptions.Compiled);
+            var eachFile = new Regex("\\s*?: File  \\((?<permissions>.*?)\\)   (?<file>.*?)\r?\n", RegexOptions.Multiline | RegexOptions.Compiled);
             var entries = new List<Tuple<string, FileInfo>>();
             var sections = beginFilesList.Split(output.Item2); //[0] is copyright info, [1] is actual output...
             if (sections.Length > 1)
