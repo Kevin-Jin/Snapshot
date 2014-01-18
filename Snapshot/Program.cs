@@ -27,6 +27,7 @@ namespace Snapshot
 
             Console.WriteLine(ApplicationConfig.Instance.Folder);
             ApplicationConfig.Instance.ExtensionAssociations.ToList().ForEach(result => Console.WriteLine(result.Key + ": " + result.Value));
+            new ProjectConfig(new Dictionary<string, string>() { {"test", "test" }});
         }
 
         /// <summary>
