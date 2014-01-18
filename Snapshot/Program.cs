@@ -24,12 +24,9 @@ namespace Snapshot
                 Console.WriteLine("(No files opened by winword)");
             foreach (var entry in openedFiles)
                 Console.WriteLine(entry.Item1 + ": " + entry.Item2);
-            Console.WriteLine();
-            var projects = ConfigDatabase.GetProjects();
-            if (!projects.Any())
-                Console.WriteLine("(No projects)");
-            foreach (var entry in projects)
-                Console.WriteLine(entry.Item1 + ": " + entry.Item2);
+
+            Console.WriteLine(ApplicationConfig.Instance.Folder);
+            ApplicationConfig.Instance.ExtensionAssociations.ToList().ForEach(result => Console.WriteLine(result.Key + ": " + result.Value));
         }
 
         /// <summary>
