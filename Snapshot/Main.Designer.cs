@@ -87,13 +87,12 @@
             this.lstRecentProjects.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.lstRecentProjects.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
             this.lstRecentProjects.Font = new System.Drawing.Font("Gill Sans Ultra Bold", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lstRecentProjects.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(53)))), ((int)(((byte)(53)))), ((int)(((byte)(53)))));
+            this.lstRecentProjects.ForeColor = System.Drawing.Color.Black;
             this.lstRecentProjects.FormattingEnabled = true;
             this.lstRecentProjects.ItemHeight = 18;
-            this.lstRecentProjects.Location = new System.Drawing.Point(2, 302);
+            this.lstRecentProjects.Location = new System.Drawing.Point(2, 311);
             this.lstRecentProjects.Name = "lstRecentProjects";
             this.lstRecentProjects.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.lstRecentProjects.SelectedIndexChanged += lstRecentProjects_SelectedIndexChanged;
             this.lstRecentProjects.Size = new System.Drawing.Size(293, 108);
             this.lstRecentProjects.TabIndex = 0;
             this.lstRecentProjects.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.lstRecentProjects_DrawItem);
@@ -102,6 +101,7 @@
             // 
             this.lblRecentProjects.AutoSize = true;
             this.lblRecentProjects.Font = new System.Drawing.Font("Gill Sans Ultra Bold", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblRecentProjects.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.lblRecentProjects.Location = new System.Drawing.Point(78, 280);
             this.lblRecentProjects.Name = "lblRecentProjects";
             this.lblRecentProjects.Size = new System.Drawing.Size(141, 19);
