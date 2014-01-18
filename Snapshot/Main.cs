@@ -118,7 +118,7 @@ namespace Snapshot
 
                             var sameNameFiles = new Dictionary<string, int>();
                             var tasks = new List<Task>();
-                            var operations = Operations.GetOpenedProcesses().Select(process => new Tuple<string, Task<List<Tuple<string, string>>>>(process, Operations.GetFilesOpenedByProcess(process)));
+                            var operations = Operations.GetOpenedProcesses().Select(process => new Tuple<string, Task<List<Tuple<string, string>>>>(process, Operations.GetFilesOpenedByProcess(process.Substring(process.LastIndexOf(Path.DirectorySeparatorChar) + 1))));
                             var map = new Dictionary<string, List<String>>();
 
                             foreach (var op in operations)
