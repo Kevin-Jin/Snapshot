@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -28,9 +29,20 @@ namespace Snapshot
             lstRecentProjects.Items.Add("mHacks Detroit");
 
             timer.Tick += new EventHandler(timer_Tick);
-            timer.Interval = (10);
-            timer.Enabled = true;     
-            
+            timer.Interval = 10;
+            timer.Enabled = true;
+        }
+
+        private void StartSplash()
+        {
+            //Screenshot animation
+            f.AllowTransparency = true;
+            f.Opacity = 1;
+            f.Left = (Screen.PrimaryScreen.Bounds.Width);
+            f.Top = (Screen.PrimaryScreen.Bounds.Height);
+            f.FormBorderStyle = FormBorderStyle.None;
+            f.Show();
+            timer.Start();
         }
 
         private void lstRecentProjects_SelectedIndexChanged(object sender, System.EventArgs e)
@@ -38,7 +50,7 @@ namespace Snapshot
             if (lstRecentProjects.SelectedIndex != -1)
                 MessageBox.Show("not implemented yet");
         }
-        
+
         private void btnSettings_Click(object sender, EventArgs e)
         {
             new Form2().Show();
@@ -48,16 +60,16 @@ namespace Snapshot
         {
             string output = lstRecentProjects.Items[e.Index].ToString();
             float olength = e.Graphics.MeasureString(output, e.Font).Width;
-            float pos = (lstRecentProjects.Width - olength)/2;
+            float pos = (lstRecentProjects.Width - olength) / 2;
             SolidBrush brush = new SolidBrush(e.ForeColor);
             e.Graphics.DrawString(output, e.Font, brush, pos, e.Bounds.Top);
         }
-        
+
         private void btnSaveProject_Click(object sender, EventArgs e)
         {
-<<<<<<< HEAD
             bool saveToDropbox = false;
             new DirectoryInfo(Environment.ExpandEnvironmentVariables(ApplicationConfig.Instance.Folder)).Create();
+            bool success = false;
             using (var saveDialog = new SaveFileDialog())
             {
                 saveDialog.InitialDirectory = Environment.ExpandEnvironmentVariables(ApplicationConfig.Instance.Folder);
@@ -75,10 +87,10 @@ namespace Snapshot
                     if (configFileExists)
                     {
                         msg = configFile.Name + " already exists.\nDo you want to replace it?";
-                        if (dataDirectoryExists)
+                        if (dataDirectoryExists && saveToDropbox)
                             msg += "\nThe existing " + dataDirectory.Name + " folder will be deleted as well.";
                     }
-                    else if (dataDirectoryExists)
+                    else if (dataDirectoryExists && saveToDropbox)
                     {
                         msg = dataDirectory.Name + " already exists.\nDo you want to delete the existing folder?";
                     }
@@ -97,7 +109,7 @@ namespace Snapshot
                                     var tasks = new List<Task>();
                                     var operations = Operations.GetOpenedProcesses().Select(process => new Tuple<string, Task<List<Tuple<string, string>>>>(process, Operations.GetFilesOpenedByProcess(process)));
                                     var map = new Dictionary<string, List<String>>();
-                                    
+
                                     foreach (var op in operations)
                                     {
                                         tasks.Add(op.Item2);
@@ -136,6 +148,7 @@ namespace Snapshot
                                     using (var writer = new StreamWriter(file))
                                         writer.Write(cfg.ToJson().ToString());
                                 }).Wait();
+                                success = true;
                                 //TODO: buttonless modal over save file dialog instead of blocking UI thread
                                 break;
                             case DialogResult.No:
@@ -147,48 +160,23 @@ namespace Snapshot
                         }
                     }
                 };
-                saveDialog.ShowDialog();
+                switch (saveDialog.ShowDialog())
+                {
+                    case DialogResult.Cancel:
+                        success = false;
+                        break;
+                }
             }
+
+            if (success)
+                StartSplash();
         }
-=======
-            //Screenshot animation
-            f.AllowTransparency = true;
-            f.Opacity = 1;
-            f.Left = (Screen.PrimaryScreen.Bounds.Width);
-            f.Top = (Screen.PrimaryScreen.Bounds.Height);    
-            f.FormBorderStyle = FormBorderStyle.None;
-            f.Show();
-                                        
-            timer.Start(); 
-   
-         }
->>>>>>> 954dd030d37311d1903a6b5101b0bfa73eebe4b0
 
         private void btnOpenProject_Click(object sender, EventArgs e)
         {
-            //Screenshot animation
-            f.AllowTransparency = true;
-            f.Opacity = 1;
-            f.Left = (Screen.PrimaryScreen.Bounds.Width);
-            f.Top = (Screen.PrimaryScreen.Bounds.Height);
-
-            f.FormBorderStyle = FormBorderStyle.None;
-            f.Left = (Screen.PrimaryScreen.Bounds.Width);
-            f.Top = (Screen.PrimaryScreen.Bounds.Height);
-            f.Show();
-
-            timer.Start();
-
-        }
-
-        void timer_Tick(object sender, EventArgs e)
-        {
-            f.Opacity -= 0.02;
-            
-
-            if (f.Opacity <= 0)
+            bool success = false;
+            using (var openDialog = new OpenFileDialog())
             {
-<<<<<<< HEAD
                 openDialog.InitialDirectory = Environment.ExpandEnvironmentVariables(ApplicationConfig.Instance.Folder);
                 openDialog.Title = "Where is your JSON project config and its data folder?";
                 openDialog.Filter = "JSON project config (*.json)|*.json";
@@ -203,19 +191,30 @@ namespace Snapshot
                         ea.Cancel = true;
                     }
                 };
-                openDialog.ShowDialog();
+                switch (openDialog.ShowDialog())
+                {
+                    case DialogResult.Cancel:
+                        break;
+                    case DialogResult.OK:
+                        success = true;
+                        break;
+                }
                 //TODO: OPEN
                 Console.WriteLine(new ProjectConfig(openDialog.FileName));
             }
-=======
-                f.Hide();
-                timer.Stop();
-            }   
->>>>>>> 954dd030d37311d1903a6b5101b0bfa73eebe4b0
+
+            if (success)
+                StartSplash();
         }
 
-              
-        
-
+        void timer_Tick(object sender, EventArgs e)
+        {
+            f.Opacity -= 0.02;
+            if (f.Opacity <= 0)
+            {
+                f.Hide();
+                timer.Stop();
+            }
+        }
     }
 }
