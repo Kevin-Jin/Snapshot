@@ -69,7 +69,9 @@ namespace Snapshot
         {
             bool saveToDropbox = false;
             new DirectoryInfo(Environment.ExpandEnvironmentVariables(ApplicationConfig.Instance.Folder)).Create();
-            bool success = false;
+            DialogResult diagResult;
+            FileInfo configFile = null;
+            DirectoryInfo dataDirectory = null;
             using (var saveDialog = new SaveFileDialog())
             {
                 saveDialog.InitialDirectory = Environment.ExpandEnvironmentVariables(ApplicationConfig.Instance.Folder);
@@ -79,10 +81,10 @@ namespace Snapshot
                 saveDialog.OverwritePrompt = false;
                 saveDialog.FileOk += (s, ea) =>
                 {
-                    var configFile = new FileInfo(saveDialog.FileName);
-                    bool configFileExists = configFile.Exists;
-                    var dataDirectory = new DirectoryInfo(saveDialog.FileName.Substring(0, saveDialog.FileName.LastIndexOf(".")) + "_data");
-                    bool dataDirectoryExists = dataDirectory.Exists;
+                    configFile = new FileInfo(saveDialog.FileName);
+                    var configFileExists = configFile.Exists;
+                    dataDirectory = new DirectoryInfo(saveDialog.FileName.Substring(0, saveDialog.FileName.LastIndexOf(".")) + "_data");
+                    var dataDirectoryExists = dataDirectory.Exists;
                     string msg = null;
                     if (configFileExists)
                     {
@@ -96,85 +98,81 @@ namespace Snapshot
                     }
                     if (msg != null)
                     {
-                        switch (MessageBox.Show(msg, "Confirm Save As", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning))
-                        {
-                            case DialogResult.Yes:
-                                TaskEx.Run(async () =>
-                                {
-                                    if (dataDirectory.Exists)
-                                        dataDirectory.Delete(true);
-                                    dataDirectory.Create();
-
-                                    var sameNameFiles = new Dictionary<string, int>();
-                                    var tasks = new List<Task>();
-                                    var operations = Operations.GetOpenedProcesses().Select(process => new Tuple<string, Task<List<Tuple<string, string>>>>(process, Operations.GetFilesOpenedByProcess(process)));
-                                    var map = new Dictionary<string, List<String>>();
-
-                                    foreach (var op in operations)
-                                    {
-                                        tasks.Add(op.Item2);
-                                        var key = op.Item1;
-                                        var files = (await op.Item2).Select(result => result.Item2).ToList();
-                                        for (var i = 0; i < files.Count; i++)
-                                        {
-                                            var fileName = files[i].Substring(files[i].LastIndexOf(Path.DirectorySeparatorChar) + 1);
-                                            string originalLocation = files[i];
-                                            if (saveToDropbox)
-                                            {
-                                                if (!sameNameFiles.ContainsKey(fileName))
-                                                {
-                                                    sameNameFiles[fileName] = 1;
-                                                    files[i] = dataDirectory.ToString() + Path.DirectorySeparatorChar + fileName;
-                                                }
-                                                else
-                                                {
-                                                    sameNameFiles[fileName]++;
-                                                    files[i] = dataDirectory.ToString() + Path.DirectorySeparatorChar + fileName + sameNameFiles[fileName];
-                                                }
-
-                                                using (Stream source = File.OpenRead(originalLocation))
-                                                using (Stream destination = File.Create(files[i]))
-                                                    tasks.Add(source.CopyToAsync(destination));
-                                            }
-                                        }
-                                        if (map.ContainsKey(key))
-                                            map[key].AddRange(files);
-                                        else
-                                            map[key] = files;
-                                    }
-                                    var cfg = new ProjectConfig(map);
-                                    await TaskEx.WhenAll(tasks);
-                                    using (var file = File.Open(configFile.FullName, FileMode.Create))
-                                    using (var writer = new StreamWriter(file))
-                                        writer.Write(cfg.ToJson().ToString());
-                                }).Wait();
-                                success = true;
-                                //TODO: buttonless modal over save file dialog instead of blocking UI thread
-                                break;
-                            case DialogResult.No:
-                                //don't save file
-                                break;
-                            case DialogResult.Cancel:
-                                ea.Cancel = true;
-                                break;
-                        }
+                        diagResult = MessageBox.Show(msg, "Confirm Save As", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
+                        if (diagResult == DialogResult.Cancel)
+                            ea.Cancel = true;
                     }
                 };
                 switch (saveDialog.ShowDialog())
                 {
+                    case DialogResult.Yes:
+                    case DialogResult.OK:
+                        TaskEx.Run(async () =>
+                        {
+                            if (saveToDropbox)
+                            {
+                                if (dataDirectory.Exists)
+                                    dataDirectory.Delete(true);
+                                dataDirectory.Create();
+                            }
+
+                            var sameNameFiles = new Dictionary<string, int>();
+                            var tasks = new List<Task>();
+                            var operations = Operations.GetOpenedProcesses().Select(process => new Tuple<string, Task<List<Tuple<string, string>>>>(process, Operations.GetFilesOpenedByProcess(process)));
+                            var map = new Dictionary<string, List<String>>();
+
+                            foreach (var op in operations)
+                            {
+                                tasks.Add(op.Item2);
+                                var key = op.Item1;
+                                var files = (await op.Item2).Select(result => result.Item2).ToList();
+                                for (var i = 0; i < files.Count; i++)
+                                {
+                                    var fileName = files[i].Substring(files[i].LastIndexOf(Path.DirectorySeparatorChar) + 1);
+                                    string originalLocation = files[i];
+                                    if (saveToDropbox)
+                                    {
+                                        if (!sameNameFiles.ContainsKey(fileName))
+                                        {
+                                            sameNameFiles[fileName] = 1;
+                                            files[i] = dataDirectory.ToString() + Path.DirectorySeparatorChar + fileName;
+                                        }
+                                        else
+                                        {
+                                            sameNameFiles[fileName]++;
+                                            files[i] = dataDirectory.ToString() + Path.DirectorySeparatorChar + fileName + sameNameFiles[fileName];
+                                        }
+
+                                        using (Stream source = File.OpenRead(originalLocation))
+                                        using (Stream destination = File.Create(files[i]))
+                                            tasks.Add(source.CopyToAsync(destination));
+                                    }
+                                }
+                                if (map.ContainsKey(key))
+                                    map[key].AddRange(files);
+                                else
+                                    map[key] = files;
+                            }
+                            var cfg = new ProjectConfig(map);
+                            await TaskEx.WhenAll(tasks);
+                            using (var file = File.Open(configFile.FullName, FileMode.Create))
+                            using (var writer = new StreamWriter(file))
+                                writer.Write(cfg.ToJson().ToString());
+                        }).Wait();
+                        //TODO: buttonless modal over save file dialog instead of blocking UI thread
+                        StartSplash();
+                        break;
+                    case DialogResult.No:
                     case DialogResult.Cancel:
-                        success = false;
                         break;
                 }
             }
-
-            if (success)
-                StartSplash();
         }
 
         private void btnOpenProject_Click(object sender, EventArgs e)
         {
-            bool success = false;
+            bool loadFromDropbox = false;
+            DialogResult diagResult;
             using (var openDialog = new OpenFileDialog())
             {
                 openDialog.InitialDirectory = Environment.ExpandEnvironmentVariables(ApplicationConfig.Instance.Folder);
@@ -182,32 +180,42 @@ namespace Snapshot
                 openDialog.Filter = "JSON project config (*.json)|*.json";
                 openDialog.FileOk += (s, ea) =>
                 {
-                    var dataDirectory = new DirectoryInfo(openDialog.FileName.Substring(0, openDialog.FileName.LastIndexOf(".")) + "_data");
-                    bool dataDirectoryExists = dataDirectory.Exists;
-                    if (!dataDirectoryExists)
+                    if (loadFromDropbox)
                     {
-                        var msg = dataDirectory.Name + "\nDirectory not found.\n" + dataDirectory.Name.Substring(0, dataDirectory.Name.LastIndexOf("_data")) + " is not a valid Snapshot project.";
-                        MessageBox.Show(msg, openDialog.Title, MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                        ea.Cancel = true;
+                        var dataDirectory = new DirectoryInfo(openDialog.FileName.Substring(0, openDialog.FileName.LastIndexOf(".")) + "_data");
+                        bool dataDirectoryExists = dataDirectory.Exists;
+                        if (!dataDirectoryExists)
+                        {
+                            var msg = dataDirectory.Name + "\nDirectory not found.\n" + dataDirectory.Name.Substring(0, dataDirectory.Name.LastIndexOf("_data")) + " is not a valid Snapshot project.";
+                            MessageBox.Show(msg, openDialog.Title, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            ea.Cancel = true;
+                        }
                     }
                 };
-                switch (openDialog.ShowDialog())
+                diagResult = openDialog.ShowDialog();
+                switch (diagResult)
                 {
                     case DialogResult.Cancel:
                         break;
                     case DialogResult.OK:
-                        success = true;
+                        {
+                            foreach (var entry in new ProjectConfig(openDialog.FileName).Processes)
+                            {
+                                switch (entry.Key.Substring(entry.Key.LastIndexOf(Path.DirectorySeparatorChar) + 1).ToLower())
+                                {
+                                    case "winword.exe":
+                                        Operations.GetOutput(entry.Key, string.Join(" ", entry.Value));
+                                        break;
+                                }
+                            }
+                            StartSplash();
+                        }
                         break;
                 }
-                //TODO: OPEN
-                Console.WriteLine(new ProjectConfig(openDialog.FileName));
             }
-
-            if (success)
-                StartSplash();
         }
 
-        void timer_Tick(object sender, EventArgs e)
+        private void timer_Tick(object sender, EventArgs e)
         {
             f.Opacity -= 0.02;
             if (f.Opacity <= 0)

@@ -46,6 +46,8 @@ namespace Snapshot
             });
         }
 
+        internal Dictionary<string, List<string>> Processes { get { return processes; } }
+
         public override string ToString()
         {
             return string.Join(", ", processes.Select(entry => ('(' + entry.Key + " => " + string.Join(", ", entry.Value) + ')')));

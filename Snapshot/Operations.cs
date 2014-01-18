@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Management;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -11,7 +12,7 @@ namespace Snapshot
 {
     internal static class Operations
     {
-        private static Task<Tuple<int, string>> GetOutput(string processFileName, string arguments)
+        internal static Task<Tuple<int, string>> GetOutput(string processFileName, string arguments)
         {
             var startInfo = new ProcessStartInfo();
             startInfo.RedirectStandardError = startInfo.RedirectStandardOutput = startInfo.RedirectStandardInput = true;
@@ -48,13 +49,34 @@ namespace Snapshot
             return completionSource.Task;
         }
 
-        internal static List<string> GetOpenedProcesses(IEnumerable<string> processesToFind = null)
+        internal static string ExecutablePath(this Process process)
+        {
+            try
+            {
+                return process.MainModule.FileName;
+            }
+            catch
+            {
+                var query = "SELECT ExecutablePath, ProcessID FROM Win32_Process";
+                var searcher = new ManagementObjectSearcher(query);
+
+                foreach (ManagementObject item in searcher.Get())
+                {
+                    var id = item["ProcessID"];
+                    var path = item["ExecutablePath"];
+
+                    if (path != null && id.ToString() == process.Id.ToString())
+                        return path.ToString();
+                }
+            }
+
+            return "";
+        }
+
+        internal static List<string> GetOpenedProcesses()
         {
             //MainWindowTitle is null if the application does not have a window
-            if (processesToFind != null)
-                return Process.GetProcesses().Where(result => !string.IsNullOrWhiteSpace(result.MainWindowTitle)).Select(result => result.ProcessName).Intersect(processesToFind).ToList();
-            else
-                return Process.GetProcesses().Where(result => !string.IsNullOrWhiteSpace(result.MainWindowTitle)).Select(result => result.ProcessName).ToList();
+            return Process.GetProcesses().Where(result => !string.IsNullOrWhiteSpace(result.MainWindowTitle)).Select(result => result.ExecutablePath()).ToList();
         }
 
         internal static async Task<List<Tuple<string, string>>> GetFilesOpenedByProcess(string processName)
