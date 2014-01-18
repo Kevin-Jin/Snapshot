@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Snapshot
@@ -52,10 +53,17 @@ namespace Snapshot
             return Process.GetProcesses().Select(result => result.ProcessName).Intersect(processesToFind).ToList();
         }
 
-        internal static async Task<IList<FileInfo>> GetFilesOpenedByProcess(string processName)
+        internal static async Task<IList<Tuple<string, FileInfo>>> GetFilesOpenedByProcess(string processName)
         {
             var output = await GetOutput("handle.exe", "-p " + processName);
-            return null;
+            Regex beginFilesList = new Regex("------------------------------------------------------------------------------\r?\n.*?\r?\n", RegexOptions.Multiline | RegexOptions.Compiled);
+            Regex eachFile = new Regex("\\s*?: File  \\((?<permissions>.*?)\\)   (?<file>.*?)\r?\n", RegexOptions.Multiline | RegexOptions.Compiled);
+            var entries = new List<Tuple<string, FileInfo>>();
+            var sections = beginFilesList.Split(output.Item2); //[0] is copyright info, [1] is actual output...
+            if (sections.Length > 1)
+                for (var match = eachFile.Match(beginFilesList.Split(output.Item2)[1]); match.Success; match = match.NextMatch())
+                    entries.Add(new Tuple<string, FileInfo>(match.Groups["permissions"].Value, new FileInfo(match.Groups["file"].Value)));
+            return entries;
         }
     }
 }
