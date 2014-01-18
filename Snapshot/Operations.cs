@@ -48,21 +48,26 @@ namespace Snapshot
             return completionSource.Task;
         }
 
-        internal static IList<string> GetOpenedProcesses(IEnumerable<string> processesToFind)
+        internal static List<string> GetOpenedProcesses(IEnumerable<string> processesToFind = null)
         {
-            return Process.GetProcesses().Select(result => result.ProcessName).Intersect(processesToFind).ToList();
+            //MainWindowTitle is null if the application does not have a window
+            if (processesToFind != null)
+                return Process.GetProcesses().Where(result => !string.IsNullOrWhiteSpace(result.MainWindowTitle)).Select(result => result.ProcessName).Intersect(processesToFind).ToList();
+            else
+                return Process.GetProcesses().Where(result => !string.IsNullOrWhiteSpace(result.MainWindowTitle)).Select(result => result.ProcessName).ToList();
         }
 
-        internal static async Task<IList<Tuple<string, FileInfo>>> GetFilesOpenedByProcess(string processName)
+        internal static async Task<List<Tuple<string, string>>> GetFilesOpenedByProcess(string processName)
         {
-            var output = await GetOutput("handle.exe", "-p " + processName);
+            var task = GetOutput("handle.exe", "-p " + processName);
+            var output = await task;
             var beginFilesList = new Regex("------------------------------------------------------------------------------\r?\n.*?\r?\n", RegexOptions.Multiline | RegexOptions.Compiled);
             var eachFile = new Regex("\\s*?: File  \\((?<permissions>.*?)\\)   (?<file>.*?)\r?\n", RegexOptions.Multiline | RegexOptions.Compiled);
-            var entries = new List<Tuple<string, FileInfo>>();
+            var entries = new List<Tuple<string, string>>();
             var sections = beginFilesList.Split(output.Item2); //[0] is copyright info, [1] is actual output...
             if (sections.Length > 1)
                 for (var match = eachFile.Match(beginFilesList.Split(output.Item2)[1]); match.Success; match = match.NextMatch())
-                    entries.Add(new Tuple<string, FileInfo>(match.Groups["permissions"].Value, new FileInfo(match.Groups["file"].Value)));
+                    entries.Add(new Tuple<string, string>(match.Groups["permissions"].Value, match.Groups["file"].Value));
             return entries;
         }
     }

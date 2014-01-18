@@ -48,6 +48,7 @@
             this.btnOpenProject.TabIndex = 0;
             this.btnOpenProject.Text = "Open Project";
             this.btnOpenProject.UseVisualStyleBackColor = false;
+            this.btnOpenProject.Click += new System.EventHandler(this.btnOpenProject_Click);
             // 
             // btnSaveProject
             // 
@@ -59,6 +60,7 @@
             this.btnSaveProject.TabIndex = 1;
             this.btnSaveProject.Text = "Save Project";
             this.btnSaveProject.UseVisualStyleBackColor = false;
+            this.btnSaveProject.Click += new System.EventHandler(this.btnSaveProject_Click);
             // 
             // btnSettings
             // 
@@ -93,7 +95,6 @@
             this.lstRecentProjects.Location = new System.Drawing.Point(2, 298);
             this.lstRecentProjects.Name = "lstRecentProjects";
             this.lstRecentProjects.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.lstRecentProjects.SelectedIndexChanged += lstRecentProjects_SelectedIndexChanged;
             this.lstRecentProjects.Size = new System.Drawing.Size(293, 108);
             this.lstRecentProjects.TabIndex = 0;
             this.lstRecentProjects.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.lstRecentProjects_DrawItem);
