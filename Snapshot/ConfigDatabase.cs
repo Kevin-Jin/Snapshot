@@ -13,8 +13,13 @@ namespace Snapshot
         internal static void OpenDatabase()
         {
             var cfgFile = new ConfigFile();
-            if (!File.Exists(cfgFile.Folder + cfgFile.Database))
+            var fileInfo = new FileInfo(cfgFile.Folder + cfgFile.Database);
+            if (!fileInfo.Exists)
+            {
+                fileInfo.Directory.Create();
                 SQLiteConnection.CreateFile(cfgFile.Folder + cfgFile.Database);
+            }
+            
             using (var conn = new SQLiteConnection(@"Data Source=" + cfgFile.Folder + cfgFile.Database))
             {
                 conn.Open();
