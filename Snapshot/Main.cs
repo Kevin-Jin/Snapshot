@@ -35,8 +35,7 @@ namespace Snapshot
 
         private void btnSettings_Click(object sender, EventArgs e)
         {
-            using (var form2 = new Form2())
-                form2.Show();
+            new Form2().Show();
         }
 
         private void lstRecentProjects_DrawItem(object sender, DrawItemEventArgs e)
