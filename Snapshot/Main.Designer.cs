@@ -40,7 +40,7 @@
             // btnOpenProject
             // 
             this.btnOpenProject.BackColor = System.Drawing.Color.White;
-            this.btnOpenProject.Font = new System.Drawing.Font("Swis721 BlkEx BT", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnOpenProject.Font = new System.Drawing.Font("Gill Sans Ultra Bold", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnOpenProject.Location = new System.Drawing.Point(21, 192);
             this.btnOpenProject.Name = "btnOpenProject";
             this.btnOpenProject.Size = new System.Drawing.Size(170, 51);
@@ -51,7 +51,7 @@
             // btnSaveProject
             // 
             this.btnSaveProject.BackColor = System.Drawing.Color.White;
-            this.btnSaveProject.Font = new System.Drawing.Font("Swis721 BlkEx BT", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnSaveProject.Font = new System.Drawing.Font("Gill Sans Ultra Bold", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnSaveProject.Location = new System.Drawing.Point(21, 128);
             this.btnSaveProject.Name = "btnSaveProject";
             this.btnSaveProject.Size = new System.Drawing.Size(170, 51);
@@ -62,7 +62,7 @@
             // btnSettings
             // 
             this.btnSettings.BackColor = System.Drawing.Color.White;
-            this.btnSettings.Font = new System.Drawing.Font("Swis721 BlkEx BT", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnSettings.Font = new System.Drawing.Font("Gill Sans Ultra Bold", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnSettings.Location = new System.Drawing.Point(21, 438);
             this.btnSettings.Name = "btnSettings";
             this.btnSettings.Size = new System.Drawing.Size(157, 51);
@@ -82,9 +82,9 @@
             // 
             // lstRecentProjects
             // 
-            this.lstRecentProjects.Font = new System.Drawing.Font("Swis721 BlkEx BT", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lstRecentProjects.Font = new System.Drawing.Font("Gill Sans Ultra Bold", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lstRecentProjects.FormattingEnabled = true;
-            this.lstRecentProjects.ItemHeight = 14;
+            this.lstRecentProjects.ItemHeight = 18;
             this.lstRecentProjects.Location = new System.Drawing.Point(21, 274);
             this.lstRecentProjects.Name = "lstRecentProjects";
             this.lstRecentProjects.Size = new System.Drawing.Size(157, 130);
@@ -93,10 +93,10 @@
             // lblRecentProjects
             // 
             this.lblRecentProjects.AutoSize = true;
-            this.lblRecentProjects.Font = new System.Drawing.Font("Swis721 BlkEx BT", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblRecentProjects.Font = new System.Drawing.Font("Gill Sans Ultra Bold", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblRecentProjects.Location = new System.Drawing.Point(22, 257);
             this.lblRecentProjects.Name = "lblRecentProjects";
-            this.lblRecentProjects.Size = new System.Drawing.Size(135, 14);
+            this.lblRecentProjects.Size = new System.Drawing.Size(121, 18);
             this.lblRecentProjects.TabIndex = 5;
             this.lblRecentProjects.Text = "Recent projects:";
             // 

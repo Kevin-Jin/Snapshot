@@ -31,10 +31,7 @@ namespace Snapshot
 
         private void btnSettings_Click(object sender, EventArgs e)
         {
-            CustomControl customControl = new CustomControl();
-            Form newForm = new Form();
-            newForm.Controls.Add(customControl);
-            newForm.ShowDialog();
+          
         }
      
     }
