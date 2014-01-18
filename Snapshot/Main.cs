@@ -21,7 +21,11 @@ namespace Snapshot
 
         private void Main_Load(object sender, EventArgs e)
         {
-            lstRecentProjects.Items.Add("not implemented yet");
+            lstRecentProjects.Items.Add("Biology Research");
+            lstRecentProjects.Items.Add("Aerospace Homework");
+            lstRecentProjects.Items.Add("Snapshot");
+            lstRecentProjects.Items.Add("Reddit Time");
+            lstRecentProjects.Items.Add("mHacks Detroit");
        
         }
 
