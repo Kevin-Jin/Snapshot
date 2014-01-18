@@ -14,7 +14,7 @@ namespace Snapshot
         private readonly string folder;
         private readonly Dictionary<string, string> processForExtension = new Dictionary<string,string>();
 
-        private ApplicationConfig(string jsonFile = "config.json.cfg")
+        private ApplicationConfig(string jsonFile = "config.json")
         {
             if (File.Exists(jsonFile))
             {
@@ -32,8 +32,6 @@ namespace Snapshot
         internal string Folder { get { return folder; } }
 
         internal Dictionary<string, string> ExtensionAssociations { get { return processForExtension; } }
-
-        internal string Database { get { return "snapshot.db3"; } }
 
         private static readonly ApplicationConfig singleton = new ApplicationConfig();
 
