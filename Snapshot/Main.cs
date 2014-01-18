@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
-using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,7 +12,8 @@ namespace Snapshot
 {
     public partial class Main : Form
     {
-       
+        Timer timer = new Timer();
+        Form2 f = new Form2();
         public Main()
         {
             InitializeComponent();
@@ -26,6 +26,11 @@ namespace Snapshot
             lstRecentProjects.Items.Add("Snapshot");
             lstRecentProjects.Items.Add("Reddit Time");
             lstRecentProjects.Items.Add("mHacks Detroit");
+
+            timer.Tick += new EventHandler(timer_Tick);
+            timer.Interval = (10);
+            timer.Enabled = true;     
+            
         }
 
         private void lstRecentProjects_SelectedIndexChanged(object sender, System.EventArgs e)
@@ -47,9 +52,10 @@ namespace Snapshot
             SolidBrush brush = new SolidBrush(e.ForeColor);
             e.Graphics.DrawString(output, e.Font, brush, pos, e.Bounds.Top);
         }
-
+        
         private void btnSaveProject_Click(object sender, EventArgs e)
         {
+<<<<<<< HEAD
             bool saveToDropbox = false;
             new DirectoryInfo(Environment.ExpandEnvironmentVariables(ApplicationConfig.Instance.Folder)).Create();
             using (var saveDialog = new SaveFileDialog())
@@ -144,11 +150,45 @@ namespace Snapshot
                 saveDialog.ShowDialog();
             }
         }
+=======
+            //Screenshot animation
+            f.AllowTransparency = true;
+            f.Opacity = 1;
+            f.Left = (Screen.PrimaryScreen.Bounds.Width);
+            f.Top = (Screen.PrimaryScreen.Bounds.Height);    
+            f.FormBorderStyle = FormBorderStyle.None;
+            f.Show();
+                                        
+            timer.Start(); 
+   
+         }
+>>>>>>> 954dd030d37311d1903a6b5101b0bfa73eebe4b0
 
         private void btnOpenProject_Click(object sender, EventArgs e)
         {
-            using (var openDialog = new OpenFileDialog())
+            //Screenshot animation
+            f.AllowTransparency = true;
+            f.Opacity = 1;
+            f.Left = (Screen.PrimaryScreen.Bounds.Width);
+            f.Top = (Screen.PrimaryScreen.Bounds.Height);
+
+            f.FormBorderStyle = FormBorderStyle.None;
+            f.Left = (Screen.PrimaryScreen.Bounds.Width);
+            f.Top = (Screen.PrimaryScreen.Bounds.Height);
+            f.Show();
+
+            timer.Start();
+
+        }
+
+        void timer_Tick(object sender, EventArgs e)
+        {
+            f.Opacity -= 0.02;
+            
+
+            if (f.Opacity <= 0)
             {
+<<<<<<< HEAD
                 openDialog.InitialDirectory = Environment.ExpandEnvironmentVariables(ApplicationConfig.Instance.Folder);
                 openDialog.Title = "Where is your JSON project config and its data folder?";
                 openDialog.Filter = "JSON project config (*.json)|*.json";
@@ -167,6 +207,15 @@ namespace Snapshot
                 //TODO: OPEN
                 Console.WriteLine(new ProjectConfig(openDialog.FileName));
             }
+=======
+                f.Hide();
+                timer.Stop();
+            }   
+>>>>>>> 954dd030d37311d1903a6b5101b0bfa73eebe4b0
         }
+
+              
+        
+
     }
 }

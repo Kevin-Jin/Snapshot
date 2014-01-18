@@ -117,6 +117,7 @@
     <Content Include="handle.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <None Include="Resources\snap.jpg" />
     <None Include="Resources\bg.jpg" />
     <None Include="Resources\snapshot3.jpg" />
   </ItemGroup>
