@@ -1,6 +1,6 @@
 ﻿{
 	"folderInsideDropbox": "%USERPROFILE%\\Dropbox\\Snapshot test\\",
 	"associations": [
-		{ "extension": "txt", "process": "notepad" }
+		{ "extension": "txt", "process": "notepad" },
 	]
 }

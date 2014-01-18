@@ -93,6 +93,7 @@
             this.lstRecentProjects.Location = new System.Drawing.Point(2, 302);
             this.lstRecentProjects.Name = "lstRecentProjects";
             this.lstRecentProjects.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.lstRecentProjects.SelectedIndexChanged += lstRecentProjects_SelectedIndexChanged;
             this.lstRecentProjects.Size = new System.Drawing.Size(293, 108);
             this.lstRecentProjects.TabIndex = 0;
             this.lstRecentProjects.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.lstRecentProjects_DrawItem);

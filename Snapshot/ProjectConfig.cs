@@ -9,36 +9,31 @@ using System.Threading.Tasks;
 
 namespace Snapshot
 {
-    internal class ProcessConfig
-    {
-        public string processAbsolutePath;
-        public string openedFilesPaths;
-    }
-
     internal class ProjectConfig
     {
-        private readonly Dictionary<string, string> processes;
+        private readonly Dictionary<string, List<string>> processes;
 
         internal ProjectConfig(string jsonFile)
         {
+            processes = new Dictionary<string, List<string>>();
             if (File.Exists(jsonFile))
-            {
-                processes = new Dictionary<string, string>();
                 using (var file = File.OpenRead(jsonFile))
                 using (var cfg = new StreamReader(file))
-                {
-                    var json = JObject.Parse(cfg.ReadToEnd());
-                    json.Value<List<ProcessConfig>>("processes").ForEach(process => processes[process.processAbsolutePath] = process.openedFilesPaths);
-                }
-            }
+                    JObject.Parse(cfg.ReadToEnd()).Value<JArray>("processes").Select(token => new Tuple<string, string>(token.Value<string>("processAbsolutePath"), token.Value<string>("openedFilesPaths"))).ToList().ForEach(process =>
+                    {
+                        if (processes.ContainsKey(process.Item1))
+                            processes[process.Item1].Add(process.Item2);
+                        else
+                            processes[process.Item1] = new List<string>() { process.Item2 };
+                    });
         }
 
-        internal ProjectConfig(Dictionary<string, string> processes)
+        internal ProjectConfig(Dictionary<string, List<string>> processes)
         {
             this.processes = processes;
         }
 
-        public JObject ToJson()
+        internal JObject ToJson()
         {
             return JObject.FromObject(new
             {
@@ -49,6 +44,11 @@ namespace Snapshot
                                 openedFilesPaths = process.Value
                             }
             });
+        }
+
+        public override string ToString()
+        {
+            return string.Join(", ", processes.Select(entry => ('(' + entry.Key + " => " + string.Join(", ", entry.Value) + ')')));
         }
     }
 }
