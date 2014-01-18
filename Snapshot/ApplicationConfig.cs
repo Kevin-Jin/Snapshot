@@ -25,9 +25,9 @@ namespace Snapshot
                     folder = Environment.ExpandEnvironmentVariables(json.Value<string>("folderInsideDropbox"));
                     foreach (var association in json.Value<JArray>("associations"))
                         if (extensionsForProcess.ContainsKey(association.Value<string>("process")))
-                            extensionsForProcess[association.Value<string>("process")].Add(association.Value<string>("extension"));
+                            extensionsForProcess[association.Value<string>("process").ToLower()].AddRange(association.Value<JArray>("extensions").Select(result => ((string)result).ToLower()).ToList());
                         else
-                            extensionsForProcess[association.Value<string>("process")] = new List<string>() { association.Value<string>("extension") };
+                            extensionsForProcess[association.Value<string>("process").ToLower()] = association.Value<JArray>("extensions").Select(result => ((string)result).ToLower()).ToList();
                 }
             }
         }

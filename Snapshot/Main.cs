@@ -50,6 +50,7 @@ namespace Snapshot
 
         private void btnSaveProject_Click(object sender, EventArgs e)
         {
+            bool saveToDropbox = false;
             new DirectoryInfo(Environment.ExpandEnvironmentVariables(ApplicationConfig.Instance.Folder)).Create();
             using (var saveDialog = new SaveFileDialog())
             {
@@ -82,17 +83,46 @@ namespace Snapshot
                             case DialogResult.Yes:
                                 TaskEx.Run(async () =>
                                 {
-                                    var tasks = new List<Task<List<Tuple<string, string>>>>();
-                                    var lol = Operations.GetOpenedProcesses().Select(process => new Tuple<string, Task<List<Tuple<string, string>>>>(process, Operations.GetFilesOpenedByProcess(process)));
+                                    if (dataDirectory.Exists)
+                                        dataDirectory.Delete(true);
+                                    dataDirectory.Create();
+
+                                    var sameNameFiles = new Dictionary<string, int>();
+                                    var tasks = new List<Task>();
+                                    var operations = Operations.GetOpenedProcesses().Select(process => new Tuple<string, Task<List<Tuple<string, string>>>>(process, Operations.GetFilesOpenedByProcess(process)));
                                     var map = new Dictionary<string, List<String>>();
-                                    foreach (var lel in lol)
+                                    
+                                    foreach (var op in operations)
                                     {
-                                        tasks.Add(lel.Item2);
-                                        var key = lel.Item1;
+                                        tasks.Add(op.Item2);
+                                        var key = op.Item1;
+                                        var files = (await op.Item2).Select(result => result.Item2).ToList();
+                                        for (var i = 0; i < files.Count; i++)
+                                        {
+                                            var fileName = files[i].Substring(files[i].LastIndexOf(Path.DirectorySeparatorChar) + 1);
+                                            string originalLocation = files[i];
+                                            if (saveToDropbox)
+                                            {
+                                                if (!sameNameFiles.ContainsKey(fileName))
+                                                {
+                                                    sameNameFiles[fileName] = 1;
+                                                    files[i] = dataDirectory.ToString() + Path.DirectorySeparatorChar + fileName;
+                                                }
+                                                else
+                                                {
+                                                    sameNameFiles[fileName]++;
+                                                    files[i] = dataDirectory.ToString() + Path.DirectorySeparatorChar + fileName + sameNameFiles[fileName];
+                                                }
+
+                                                using (Stream source = File.OpenRead(originalLocation))
+                                                using (Stream destination = File.Create(files[i]))
+                                                    tasks.Add(source.CopyToAsync(destination));
+                                            }
+                                        }
                                         if (map.ContainsKey(key))
-                                            map[key].AddRange((await lel.Item2).Select(result => result.Item2).ToList());
+                                            map[key].AddRange(files);
                                         else
-                                            map[key] = (await lel.Item2).Select(result => result.Item2).ToList();
+                                            map[key] = files;
                                     }
                                     var cfg = new ProjectConfig(map);
                                     await TaskEx.WhenAll(tasks);
@@ -134,6 +164,7 @@ namespace Snapshot
                     }
                 };
                 openDialog.ShowDialog();
+                //TODO: OPEN
                 Console.WriteLine(new ProjectConfig(openDialog.FileName));
             }
         }

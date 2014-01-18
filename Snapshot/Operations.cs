@@ -59,15 +59,19 @@ namespace Snapshot
 
         internal static async Task<List<Tuple<string, string>>> GetFilesOpenedByProcess(string processName)
         {
+            var entries = new List<Tuple<string, string>>();
+            var extensions = ApplicationConfig.Instance.ExtensionAssociations.ContainsKey(processName.ToLower()) ? ApplicationConfig.Instance.ExtensionAssociations[processName.ToLower()] : null;
+            if (extensions == null)
+                return entries;
             var task = GetOutput("handle.exe", "-p " + processName);
             var output = await task;
             var beginFilesList = new Regex("------------------------------------------------------------------------------\r?\n.*?\r?\n", RegexOptions.Multiline | RegexOptions.Compiled);
             var eachFile = new Regex("\\s*?: File  \\((?<permissions>.*?)\\)   (?<file>.*?)\r?\n", RegexOptions.Multiline | RegexOptions.Compiled);
-            var entries = new List<Tuple<string, string>>();
             var sections = beginFilesList.Split(output.Item2); //[0] is copyright info, [1] is actual output...
             if (sections.Length > 1)
                 for (var match = eachFile.Match(beginFilesList.Split(output.Item2)[1]); match.Success; match = match.NextMatch())
-                    entries.Add(new Tuple<string, string>(match.Groups["permissions"].Value, match.Groups["file"].Value));
+                    if (extensions.Contains(match.Groups["file"].Value.Substring(match.Groups["file"].Value.LastIndexOf('.') + 1).ToLower()))
+                        entries.Add(new Tuple<string, string>(match.Groups["permissions"].Value, match.Groups["file"].Value));
             return entries;
         }
     }
