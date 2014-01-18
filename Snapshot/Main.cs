@@ -25,6 +25,10 @@ namespace Snapshot
             lstRecentProjects.Items.Add("Snapshot");
             lstRecentProjects.Items.Add("Reddit Time");
             lstRecentProjects.Items.Add("mHacks Detroit");
+<<<<<<< HEAD
+=======
+       
+>>>>>>> 8b0ba98fa1b7dcbdc8224dedaa53a7e043c5d024
         }
 
         private void lstRecentProjects_SelectedIndexChanged(object sender, System.EventArgs e)
