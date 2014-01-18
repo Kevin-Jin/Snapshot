@@ -14,7 +14,11 @@ namespace Snapshot
         private readonly string folder;
         private readonly Dictionary<string, string> processForExtension = new Dictionary<string,string>();
 
+<<<<<<< HEAD
         internal ApplicationConfig(string jsonFile = "config.json.cfg")
+=======
+        private ApplicationConfig(string jsonFile = "config.json")
+>>>>>>> cb584ed2f180dfcb052f90cd169f74ef4c96f449
         {
             if (File.Exists(jsonFile))
             {
