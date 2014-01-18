@@ -114,7 +114,7 @@
             this.Controls.Add(this.btnOpenProject);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "Main";
-            this.Text = "Main";
+            this.Text = "Snapshot";
             this.Load += new System.EventHandler(this.Main_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
