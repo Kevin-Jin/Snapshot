@@ -42,7 +42,7 @@
             // 
             this.btnOpenProject.BackColor = System.Drawing.Color.White;
             this.btnOpenProject.Font = new System.Drawing.Font("Gill Sans Ultra Bold", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnOpenProject.Location = new System.Drawing.Point(71, 228);
+            this.btnOpenProject.Location = new System.Drawing.Point(63, 228);
             this.btnOpenProject.Name = "btnOpenProject";
             this.btnOpenProject.Size = new System.Drawing.Size(170, 51);
             this.btnOpenProject.TabIndex = 0;
@@ -53,7 +53,7 @@
             // 
             this.btnSaveProject.BackColor = System.Drawing.Color.White;
             this.btnSaveProject.Font = new System.Drawing.Font("Gill Sans Ultra Bold", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnSaveProject.Location = new System.Drawing.Point(71, 128);
+            this.btnSaveProject.Location = new System.Drawing.Point(62, 128);
             this.btnSaveProject.Name = "btnSaveProject";
             this.btnSaveProject.Size = new System.Drawing.Size(170, 51);
             this.btnSaveProject.TabIndex = 1;
@@ -64,7 +64,7 @@
             // 
             this.btnSettings.BackColor = System.Drawing.Color.White;
             this.btnSettings.Font = new System.Drawing.Font("Gill Sans Ultra Bold", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnSettings.Location = new System.Drawing.Point(59, 444);
+            this.btnSettings.Location = new System.Drawing.Point(63, 444);
             this.btnSettings.Name = "btnSettings";
             this.btnSettings.Size = new System.Drawing.Size(170, 47);
             this.btnSettings.TabIndex = 3;
@@ -75,7 +75,7 @@
             // pictureBox1
             // 
             this.pictureBox1.Image = global::Snapshot.Properties.Resources.snapshot3;
-            this.pictureBox1.Location = new System.Drawing.Point(44, 21);
+            this.pictureBox1.Location = new System.Drawing.Point(36, 21);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(224, 92);
             this.pictureBox1.TabIndex = 4;
@@ -102,7 +102,7 @@
             // 
             this.lblRecentProjects.AutoSize = true;
             this.lblRecentProjects.Font = new System.Drawing.Font("Gill Sans Ultra Bold", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblRecentProjects.Location = new System.Drawing.Point(95, 280);
+            this.lblRecentProjects.Location = new System.Drawing.Point(87, 280);
             this.lblRecentProjects.Name = "lblRecentProjects";
             this.lblRecentProjects.Size = new System.Drawing.Size(121, 18);
             this.lblRecentProjects.TabIndex = 5;
@@ -112,7 +112,7 @@
             // 
             this.checkBox1.AutoSize = true;
             this.checkBox1.Font = new System.Drawing.Font("Gill Sans Ultra Bold", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.checkBox1.Location = new System.Drawing.Point(82, 185);
+            this.checkBox1.Location = new System.Drawing.Point(74, 185);
             this.checkBox1.Name = "checkBox1";
             this.checkBox1.Size = new System.Drawing.Size(149, 22);
             this.checkBox1.TabIndex = 6;
