@@ -19,7 +19,12 @@ namespace Snapshot
 
         private void Main_Load(object sender, EventArgs e)
         {
+            lstRecentProjects.Items.Add("not implemented yet");
+        }
 
+        private void lstRecentProjects_SelectedIndexChanged(object sender, System.EventArgs e)
+        {
+            MessageBox.Show("not implemented yet");
         }
     }
 }

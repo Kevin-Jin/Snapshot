@@ -42,7 +42,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-	<Reference Include="System.Configuration" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Data.SQLite">
       <HintPath>..\packages\System.Data.SQLite.1.0.90.0\lib\net45\System.Data.SQLite.dll</HintPath>
     </Reference>
@@ -62,7 +62,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ConfigFile.cs" />
-	<Compile Include="ConfigDatabase.cs" />
+    <Compile Include="ConfigDatabase.cs" />
     <Compile Include="Main.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -103,7 +103,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Content Include="handle.exe">

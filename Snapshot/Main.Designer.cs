@@ -28,51 +28,42 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.button1 = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.btnOpenProject = new System.Windows.Forms.Button();
+            this.btnSaveProject = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.lstRecentProjects = new System.Windows.Forms.ListBox();
+            this.lblRecentProjects = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
-            // button1
+            // btnOpenProject
             // 
-            this.button1.BackColor = System.Drawing.Color.White;
-            this.button1.Font = new System.Drawing.Font("Swis721 BlkEx BT", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button1.Location = new System.Drawing.Point(22, 130);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(157, 51);
-            this.button1.TabIndex = 0;
-            this.button1.Text = "Open New Project";
-            this.button1.UseVisualStyleBackColor = false;
+            this.btnOpenProject.BackColor = System.Drawing.Color.White;
+            this.btnOpenProject.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnOpenProject.Location = new System.Drawing.Point(21, 192);
+            this.btnOpenProject.Name = "btnOpenProject";
+            this.btnOpenProject.Size = new System.Drawing.Size(157, 51);
+            this.btnOpenProject.TabIndex = 0;
+            this.btnOpenProject.Text = "Open New Project";
+            this.btnOpenProject.UseVisualStyleBackColor = false;
             // 
-            // button2
+            // btnSaveProject
             // 
-            this.button2.BackColor = System.Drawing.Color.White;
-            this.button2.Font = new System.Drawing.Font("Swis721 BlkEx BT", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button2.Location = new System.Drawing.Point(22, 329);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(157, 51);
-            this.button2.TabIndex = 1;
-            this.button2.Text = "Save New Project";
-            this.button2.UseVisualStyleBackColor = false;
-            // 
-            // groupBox1
-            // 
-            this.groupBox1.BackColor = System.Drawing.Color.White;
-            this.groupBox1.Location = new System.Drawing.Point(21, 188);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(252, 120);
-            this.groupBox1.TabIndex = 2;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "groupBox1";
+            this.btnSaveProject.BackColor = System.Drawing.Color.White;
+            this.btnSaveProject.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnSaveProject.Location = new System.Drawing.Point(21, 128);
+            this.btnSaveProject.Name = "btnSaveProject";
+            this.btnSaveProject.Size = new System.Drawing.Size(157, 51);
+            this.btnSaveProject.TabIndex = 1;
+            this.btnSaveProject.Text = "Create New Project";
+            this.btnSaveProject.UseVisualStyleBackColor = false;
             // 
             // button3
             // 
             this.button3.BackColor = System.Drawing.Color.White;
-            this.button3.Font = new System.Drawing.Font("Swis721 BlkEx BT", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button3.Location = new System.Drawing.Point(22, 410);
+            this.button3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button3.Location = new System.Drawing.Point(21, 438);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(157, 51);
             this.button3.TabIndex = 3;
@@ -88,32 +79,54 @@
             this.pictureBox1.TabIndex = 4;
             this.pictureBox1.TabStop = false;
             // 
+            // lstRecentProjects
+            // 
+            this.lstRecentProjects.FormattingEnabled = true;
+            this.lstRecentProjects.Location = new System.Drawing.Point(21, 274);
+            this.lstRecentProjects.Name = "lstRecentProjects";
+            this.lstRecentProjects.Size = new System.Drawing.Size(157, 134);
+            this.lstRecentProjects.TabIndex = 0;
+            this.lstRecentProjects.SelectedIndexChanged += lstRecentProjects_SelectedIndexChanged;
+            // 
+            // lblRecentProjects
+            // 
+            this.lblRecentProjects.AutoSize = true;
+            this.lblRecentProjects.Location = new System.Drawing.Point(21, 255);
+            this.lblRecentProjects.Name = "lblRecentProjects";
+            this.lblRecentProjects.Size = new System.Drawing.Size(85, 13);
+            this.lblRecentProjects.TabIndex = 5;
+            this.lblRecentProjects.Text = "Recent projects:";
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.Color.White;
             this.BackgroundImage = global::Snapshot.Properties.Resources.bg;
             this.ClientSize = new System.Drawing.Size(296, 538);
+            this.Controls.Add(this.lblRecentProjects);
+            this.Controls.Add(this.lstRecentProjects);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.button3);
-            this.Controls.Add(this.groupBox1);
-            this.Controls.Add(this.button2);
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.btnSaveProject);
+            this.Controls.Add(this.btnOpenProject);
             this.Name = "Main";
             this.Text = "Main";
             this.Load += new System.EventHandler(this.Main_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
         #endregion
 
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.Button btnOpenProject;
+        private System.Windows.Forms.Button btnSaveProject;
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.ListBox lstRecentProjects;
+        private System.Windows.Forms.Label lblRecentProjects;
     }
 }
 

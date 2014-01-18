@@ -48,7 +48,7 @@ namespace Snapshot
             return completionSource.Task;
         }
 
-        internal static IList<string> GetOpenedProcesses(ISet<string> processesToFind)
+        internal static IList<string> GetOpenedProcesses(IEnumerable<string> processesToFind)
         {
             return Process.GetProcesses().Select(result => result.ProcessName).Intersect(processesToFind).ToList();
         }
