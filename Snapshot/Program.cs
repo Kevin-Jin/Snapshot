@@ -26,8 +26,9 @@ namespace Snapshot
                 Console.WriteLine(entry.Item1 + ": " + entry.Item2);
 
             Console.WriteLine(ApplicationConfig.Instance.Folder);
-            ApplicationConfig.Instance.ExtensionAssociations.ToList().ForEach(result => Console.WriteLine(result.Key + ": " + result.Value));
-            new ProjectConfig(new Dictionary<string, string>() { {"test", "test" }});
+            Console.WriteLine(ApplicationConfig.Instance);
+            new ProjectConfig(new Dictionary<string, List<string>>() { { "test", new List<string>() { "test" } } });
+            //Console.WriteLine(new ProjectConfig("test.json"));
         }
 
         /// <summary>
