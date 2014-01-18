@@ -12,9 +12,11 @@ namespace Snapshot
 {
     public partial class Main : Form
     {
+       
         public Main()
         {
             InitializeComponent();
+            
         }
 
         private void Main_Load(object sender, EventArgs e)
@@ -26,5 +28,14 @@ namespace Snapshot
         {
             MessageBox.Show("not implemented yet");
         }
+
+        private void btnSettings_Click(object sender, EventArgs e)
+        {
+            CustomControl customControl = new CustomControl();
+            Form newForm = new Form();
+            newForm.Controls.Add(customControl);
+            newForm.ShowDialog();
+        }
+     
     }
 }
