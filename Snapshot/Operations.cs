@@ -105,8 +105,9 @@ namespace Snapshot
             {
                 var ie = new SHDocVw.InternetExplorer();
                 ie.Navigate2(urls[0]);
-                ie.Width = Screen.PrimaryScreen.Bounds.Width;
-                ie.Height = Screen.PrimaryScreen.Bounds.Height;
+                ie.Width = Screen.PrimaryScreen.WorkingArea.Width;
+                ie.Height = Screen.PrimaryScreen.WorkingArea.Height;
+                ie.Left = ie.Top = 0;
                 for (var i = 1; i < urls.Count; i++)
                     ie.Navigate2(urls[i], 0x800);
                 ie.Visible = true;
