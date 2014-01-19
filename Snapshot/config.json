@@ -2,7 +2,7 @@
 	"folderInsideDropbox": "%USERPROFILE%\\Dropbox\\Snapshot\\",
 	"associations": [
 		{ "process": "notepad.exe", "extensions": [ "txt" ] },
-		{ "process": "winword.exe", "extensions": [ "doc", "docm", "docx", "dot", "dotm", "dotx", "htm", "html", "mht", "mhtml", "odt", "rtf", "txt", "xml" ] }
+		{ "process": "winword.exe", "extensions": [ "doc", "docm", "docx", "dot", "dotm", "dotx", "htm", "html", "mht", "mhtml", "odt", "rtf", "txt", "xml" ] },
 		{ "process": "powerpnt.exe", "extensions": [ "doc", "docm", "docx", "htm", "html", "mht", "mhtml", "odp", "pot", "potm", "potx", "ppa", "ppam", "pps", "ppsm", "ppsx", "ppt", "pptm", "pptx", "rtf", "thmx", "txt", "wpd", "wps", "xml" ] },
 		{ "process": "msaccess.exe", "extensions": [ "accda", "accdb", "accdc", "accde", "accdt", "accdw", "ade", "adp", "asc", "csv", "dbf", "mda", "mdb", "mde", "mdw", "tab", "txt", "xls", "xlsb", "xlsm", "xlsx" ] }
 	]
