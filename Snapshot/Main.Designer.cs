@@ -76,6 +76,7 @@
             this.lstRecentProjects.Size = new System.Drawing.Size(293, 144);
             this.lstRecentProjects.TabIndex = 0;
             this.lstRecentProjects.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.lstRecentProjects_DrawItem);
+            this.lstRecentProjects.SelectedIndexChanged += lstRecentProjects_SelectedIndexChanged;
             // 
             // lblRecentProjects
             // 

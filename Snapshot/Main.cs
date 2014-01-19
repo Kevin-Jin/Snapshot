@@ -170,7 +170,7 @@ namespace Snapshot
                             ea.Cancel = true;
                     }
 
-                    ApplicationConfig.Instance.PushRecentProject(configFile.Name);
+                    ApplicationConfig.Instance.PushRecentProject(configFile.FullName);
                     ReloadRecentProjects();
                 };
                 switch (saveDialog.ShowDialog())
