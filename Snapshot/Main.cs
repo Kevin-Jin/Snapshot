@@ -13,21 +13,23 @@ namespace Snapshot
 {
     public partial class Main : Form
     {
-        Timer timer = new Timer();
-        Form2 f = new Form2();
+        private readonly Timer timer = new Timer();
+        private readonly Form2 f = new Form2();
+
         public Main()
         {
             InitializeComponent();
         }
 
+        private void ReloadRecentProjects()
+        {
+            lstRecentProjects.Items.Clear();
+            lstRecentProjects.Items.AddRange(ApplicationConfig.Instance.RecentProjects.Select(str => str.Substring(str.LastIndexOf(Path.DirectorySeparatorChar) + 1)).ToArray());
+        }
+
         private void Main_Load(object sender, EventArgs e)
         {
-            
-            lstRecentProjects.Items.Add("Aerospace Homework");
-            lstRecentProjects.Items.Add("Snapshot");
-            lstRecentProjects.Items.Add("Reddit Time");
-            lstRecentProjects.Items.Add("mHacks Detroit");
-
+            ReloadRecentProjects();
             timer.Tick += new EventHandler(timer_Tick);
             timer.Interval = 10;
             timer.Enabled = true;
@@ -45,10 +47,26 @@ namespace Snapshot
             timer.Start();
         }
 
+        private void LoadProject(string cfgFile)
+        {
+            var project = new ProjectConfig(cfgFile);
+            foreach (var entry in project.Processes)
+            {
+                switch (entry.Key.Substring(entry.Key.LastIndexOf(Path.DirectorySeparatorChar) + 1).ToLower())
+                {
+                    default:
+                        Operations.GetOutput(entry.Key, "\"" + string.Join("\" \"", entry.Value) + "\"");
+                        break;
+                }
+            }
+            Operations.OpenInternetExplorerTabs(project.IeTabUrls);
+            StartSplash();
+        }
+
         private void lstRecentProjects_SelectedIndexChanged(object sender, System.EventArgs e)
         {
             if (lstRecentProjects.SelectedIndex != -1)
-                MessageBox.Show("not implemented yet");
+                LoadProject(ApplicationConfig.Instance.RecentProjects[lstRecentProjects.SelectedIndex]);
         }
 
         private void lstRecentProjects_DrawItem(object sender, DrawItemEventArgs e)
@@ -58,6 +76,60 @@ namespace Snapshot
             float pos = (lstRecentProjects.Width - olength) / 2;
             SolidBrush brush = new SolidBrush(e.ForeColor);
             e.Graphics.DrawString(output, e.Font, brush, pos, e.Bounds.Top);
+        }
+
+        private async Task SaveProject(bool saveToDropbox, FileInfo configFile, DirectoryInfo dataDirectory)
+        {
+            if (saveToDropbox)
+            {
+                if (dataDirectory.Exists)
+                    dataDirectory.Delete(true);
+                dataDirectory.Create();
+            }
+
+            var sameNameFiles = new Dictionary<string, int>();
+            var tasks = new List<Task>();
+            var operations = Operations.GetOpenedProcesses().Select(process => new Tuple<string, Task<List<Tuple<string, string>>>>(process, Operations.GetFilesOpenedByProcess(process.Substring(process.LastIndexOf(Path.DirectorySeparatorChar) + 1))));
+            var map = new Dictionary<string, List<String>>();
+
+            foreach (var op in operations)
+            {
+                tasks.Add(op.Item2);
+                var key = op.Item1;
+                var files = (await op.Item2).Select(result => result.Item2).ToList();
+                for (var i = 0; i < files.Count; i++)
+                {
+                    var fileName = files[i].Substring(files[i].LastIndexOf(Path.DirectorySeparatorChar) + 1);
+                    string originalLocation = files[i];
+                    if (saveToDropbox)
+                    {
+                        if (!sameNameFiles.ContainsKey(fileName))
+                        {
+                            sameNameFiles[fileName] = 1;
+                            files[i] = dataDirectory.ToString() + Path.DirectorySeparatorChar + fileName;
+                        }
+                        else
+                        {
+                            sameNameFiles[fileName]++;
+                            files[i] = dataDirectory.ToString() + Path.DirectorySeparatorChar + fileName + sameNameFiles[fileName];
+                        }
+
+                        using (Stream source = File.OpenRead(originalLocation))
+                        using (Stream destination = File.Create(files[i]))
+                            tasks.Add(source.CopyToAsync(destination));
+                    }
+                }
+                if (map.ContainsKey(key))
+                    map[key].AddRange(files);
+                else
+                    map[key] = files;
+            }
+            map.RemoveRange(ApplicationConfig.Instance.ExcludedProcesses);
+            var cfg = new ProjectConfig(map, Operations.GetInternetExplorerUrls());
+            await TaskEx.WhenAll(tasks);
+            using (var file = File.Open(configFile.FullName, FileMode.Create))
+            using (var writer = new StreamWriter(file))
+                writer.Write(cfg.ToJson().ToString());
         }
 
         private void btnSaveProject_Click(object sender, EventArgs e)
@@ -98,66 +170,15 @@ namespace Snapshot
                             ea.Cancel = true;
                     }
 
-                    lstRecentProjects.Items.Add(configFile.Name);
+                    ApplicationConfig.Instance.PushRecentProject(configFile.Name);
+                    ReloadRecentProjects();
                 };
                 switch (saveDialog.ShowDialog())
                 {
                     case DialogResult.Yes:
                     case DialogResult.OK:
-                        TaskEx.Run(async () =>
-                        {
-                            if (saveToDropbox)
-                            {
-                                if (dataDirectory.Exists)
-                                    dataDirectory.Delete(true);
-                                dataDirectory.Create();
-                            }
-
-                            var sameNameFiles = new Dictionary<string, int>();
-                            var tasks = new List<Task>();
-                            var operations = Operations.GetOpenedProcesses().Select(process => new Tuple<string, Task<List<Tuple<string, string>>>>(process, Operations.GetFilesOpenedByProcess(process.Substring(process.LastIndexOf(Path.DirectorySeparatorChar) + 1))));
-                            var map = new Dictionary<string, List<String>>();
-
-                            foreach (var op in operations)
-                            {
-                                tasks.Add(op.Item2);
-                                var key = op.Item1;
-                                var files = (await op.Item2).Select(result => result.Item2).ToList();
-                                for (var i = 0; i < files.Count; i++)
-                                {
-                                    var fileName = files[i].Substring(files[i].LastIndexOf(Path.DirectorySeparatorChar) + 1);
-                                    string originalLocation = files[i];
-                                    if (saveToDropbox)
-                                    {
-                                        if (!sameNameFiles.ContainsKey(fileName))
-                                        {
-                                            sameNameFiles[fileName] = 1;
-                                            files[i] = dataDirectory.ToString() + Path.DirectorySeparatorChar + fileName;
-                                        }
-                                        else
-                                        {
-                                            sameNameFiles[fileName]++;
-                                            files[i] = dataDirectory.ToString() + Path.DirectorySeparatorChar + fileName + sameNameFiles[fileName];
-                                        }
-
-                                        using (Stream source = File.OpenRead(originalLocation))
-                                        using (Stream destination = File.Create(files[i]))
-                                            tasks.Add(source.CopyToAsync(destination));
-                                    }
-                                }
-                                if (map.ContainsKey(key))
-                                    map[key].AddRange(files);
-                                else
-                                    map[key] = files;
-                            }
-                            map.RemoveRange(ApplicationConfig.Instance.ExcludedProcesses);
-                            var cfg = new ProjectConfig(map, Operations.GetInternetExplorerUrls());
-                            await TaskEx.WhenAll(tasks);
-                            using (var file = File.Open(configFile.FullName, FileMode.Create))
-                            using (var writer = new StreamWriter(file))
-                                writer.Write(cfg.ToJson().ToString());
-                        }).Wait();
                         //TODO: buttonless modal over save file dialog instead of blocking UI thread
+                        SaveProject(saveToDropbox, configFile, dataDirectory).Wait();
                         StartSplash();
                         break;
                     case DialogResult.No:
@@ -196,20 +217,7 @@ namespace Snapshot
                     case DialogResult.Cancel:
                         break;
                     case DialogResult.OK:
-                        {
-                            var project = new ProjectConfig(openDialog.FileName);
-                            foreach (var entry in project.Processes)
-                            {
-                                switch (entry.Key.Substring(entry.Key.LastIndexOf(Path.DirectorySeparatorChar) + 1).ToLower())
-                                {
-                                    default:
-                                        Operations.GetOutput(entry.Key, "\"" + string.Join("\" \"", entry.Value) + "\"");
-                                        break;
-                                }
-                            }
-                            Operations.OpenInternetExplorerTabs(project.IeTabUrls);
-                            StartSplash();
-                        }
+                        LoadProject(openDialog.FileName);
                         break;
                 }
             }

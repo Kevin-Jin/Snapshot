@@ -23,7 +23,9 @@ namespace Snapshot
         [STAThread]
         static void Main()
         {
-            AllocConsole();
+            #if (DEBUG)
+                AllocConsole();
+            #endif
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
