@@ -7,6 +7,7 @@ using System.Management;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace Snapshot
 {
@@ -104,6 +105,8 @@ namespace Snapshot
             {
                 var ie = new SHDocVw.InternetExplorer();
                 ie.Navigate2(urls[0]);
+                ie.Width = Screen.PrimaryScreen.Bounds.Width;
+                ie.Height = Screen.PrimaryScreen.Bounds.Height;
                 for (var i = 1; i < urls.Count; i++)
                     ie.Navigate2(urls[i], 0x800);
                 ie.Visible = true;
