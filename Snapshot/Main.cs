@@ -232,6 +232,8 @@ namespace Snapshot
                 timer.Stop();
             }
         }
+
+        
     }
 
     internal static class SnapshotExtensions

@@ -75,7 +75,6 @@
             this.lstRecentProjects.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.lstRecentProjects.Size = new System.Drawing.Size(293, 144);
             this.lstRecentProjects.TabIndex = 0;
-            this.lstRecentProjects.SelectedIndexChanged += lstRecentProjects_SelectedIndexChanged;
             this.lstRecentProjects.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.lstRecentProjects_DrawItem);
             // 
             // lblRecentProjects
@@ -99,6 +98,7 @@
             this.checkBox1.TabIndex = 6;
             this.checkBox1.Text = "Close Project when Saved";
             this.checkBox1.UseVisualStyleBackColor = true;
+            
             // 
             // pictureBox1
             // 
