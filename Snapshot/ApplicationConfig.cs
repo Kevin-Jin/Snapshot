@@ -6,13 +6,14 @@ using System.Threading.Tasks;
 using System.Configuration;
 using System.IO;
 using Newtonsoft.Json.Linq;
+using System.Text.RegularExpressions;
 
 namespace Snapshot
 {
     internal class ApplicationConfig
     {
         private readonly string folder;
-        private readonly Dictionary<string, List<string>> extensionsForProcess = new Dictionary<string, List<string>>();
+        private readonly Dictionary<string, Tuple<List<string>, List<Regex>>> processFilesInclusion = new Dictionary<string, Tuple<List<string>, List<Regex>>>();
 
         private ApplicationConfig(string jsonFile = "config.json")
         {
@@ -24,21 +25,39 @@ namespace Snapshot
                     var json = JObject.Parse(cfg.ReadToEnd());
                     folder = Environment.ExpandEnvironmentVariables(json.Value<string>("folderInsideDropbox"));
                     foreach (var association in json.Value<JArray>("associations"))
-                        if (extensionsForProcess.ContainsKey(association.Value<string>("process")))
-                            extensionsForProcess[association.Value<string>("process").ToLower()].AddRange(association.Value<JArray>("extensions").Select(result => ((string)result).ToLower()).ToList());
+                    {
+                        var key = association.Value<string>("process").ToLower();
+                        var extensions = association.Value<JArray>("extensions").Select(result => ((string)result).ToLower()).ToList();
+                        var exclude = association.Value<JArray>("exclude").Select(result => new Regex((string)result, RegexOptions.Compiled | RegexOptions.Multiline)).ToList();
+                        if (processFilesInclusion.ContainsKey(association.Value<string>("process")))
+                        {
+                            processFilesInclusion[key].Item1.AddRange(extensions);
+                            processFilesInclusion[key].Item2.AddRange(exclude);
+                        }
                         else
-                            extensionsForProcess[association.Value<string>("process").ToLower()] = association.Value<JArray>("extensions").Select(result => ((string)result).ToLower()).ToList();
+                        {
+                            processFilesInclusion[key] = new Tuple<List<string>, List<Regex>>(extensions, exclude);
+                        }
+                    }
                 }
             }
         }
 
         internal string Folder { get { return folder; } }
 
-        internal Dictionary<string, List<string>> ExtensionAssociations { get { return extensionsForProcess; } }
+        internal List<string> GetExtensionAssociations(string processName)
+        {
+            return processFilesInclusion.ContainsKey(processName) ? processFilesInclusion[processName].Item1 : null;
+        }
+
+        internal List<Regex> GetExclusions(string processName)
+        {
+            return processFilesInclusion.ContainsKey(processName) ? processFilesInclusion[processName].Item2 : null;
+        }
 
         public override string ToString()
         {
-            return string.Join(", ", extensionsForProcess.Select(entry => ('(' + entry.Key + " => " + string.Join(", ", entry.Value) + ')')));
+            return string.Join(", ", processFilesInclusion.Select(entry => ('(' + entry.Key + " => " + string.Join(", ", entry.Value) + ')')));
         }
 
         private static readonly ApplicationConfig singleton = new ApplicationConfig();

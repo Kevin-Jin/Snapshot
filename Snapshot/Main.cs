@@ -203,8 +203,8 @@ namespace Snapshot
                             {
                                 switch (entry.Key.Substring(entry.Key.LastIndexOf(Path.DirectorySeparatorChar) + 1).ToLower())
                                 {
-                                    case "winword.exe":
-                                        Operations.GetOutput(entry.Key, string.Join(" ", entry.Value));
+                                    default:
+                                        Operations.GetOutput(entry.Key, "\"" + string.Join("\" \"", entry.Value) + "\"");
                                         break;
                                 }
                             }
