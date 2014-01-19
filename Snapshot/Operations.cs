@@ -113,9 +113,9 @@ namespace Snapshot
         internal static List<string> GetInternetExplorerUrls()
         {
             var list = new List<string>();
-            foreach (SHDocVw.InternetExplorer ieInst in new SHDocVw.ShellWindowsClass())
-                if (!ieInst.LocationURL.StartsWith("file://"))
-                    list.Add(ieInst.LocationURL);
+            foreach (SHDocVw.InternetExplorer ieTab in new SHDocVw.ShellWindowsClass())
+                if (!string.IsNullOrWhiteSpace(ieTab.LocationURL) && !ieTab.LocationURL.StartsWith("file://"))
+                    list.Add(ieTab.LocationURL);
             return list;
         }
     }

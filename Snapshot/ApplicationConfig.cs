@@ -14,6 +14,7 @@ namespace Snapshot
     {
         private readonly string folder;
         private readonly Dictionary<string, Tuple<List<string>, List<Regex>>> processFilesInclusion = new Dictionary<string, Tuple<List<string>, List<Regex>>>();
+        private readonly List<string> processesToIgnore;
 
         private ApplicationConfig(string jsonFile = "config.json")
         {
@@ -39,6 +40,7 @@ namespace Snapshot
                             processFilesInclusion[key] = new Tuple<List<string>, List<Regex>>(extensions, exclude);
                         }
                     }
+                    processesToIgnore = json.Value<JArray>("exclude").Select(result => ((string)result).ToLower()).ToList();
                 }
             }
         }
@@ -74,6 +76,8 @@ namespace Snapshot
                         extensionsForProcess[association.Value<string>("process").ToLower()] = association.Value<JArray>("extensions").Select(result => ((string)result).ToLower()).ToList();
             }*/
         }
+
+        internal List<string> ExcludedProcesses { get { return processesToIgnore; } }
 
         public override string ToString()
         {

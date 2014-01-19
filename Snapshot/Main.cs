@@ -150,6 +150,7 @@ namespace Snapshot
                                 else
                                     map[key] = files;
                             }
+                            map.RemoveRange(ApplicationConfig.Instance.ExcludedProcesses);
                             var cfg = new ProjectConfig(map, Operations.GetInternetExplorerUrls());
                             await TaskEx.WhenAll(tasks);
                             using (var file = File.Open(configFile.FullName, FileMode.Create))
@@ -222,6 +223,15 @@ namespace Snapshot
                 f.Hide();
                 timer.Stop();
             }
+        }
+    }
+
+    internal static class SnapshotExtensions
+    {
+        internal static void RemoveRange<T1, T2>(this Dictionary<T1, T2> dict, IEnumerable<T1> keysToRemove)
+        {
+            foreach (var key in keysToRemove)
+                dict.Remove(key);
         }
     }
 }
