@@ -178,7 +178,7 @@ namespace Snapshot
                     case DialogResult.Yes:
                     case DialogResult.OK:
                         //TODO: buttonless modal over save file dialog instead of blocking UI thread
-                        SaveProject(saveToDropbox, configFile, dataDirectory).Wait();
+                        TaskEx.Run(() => SaveProject(saveToDropbox, configFile, dataDirectory)).Wait();
                         StartSplash();
                         break;
                     case DialogResult.No:
