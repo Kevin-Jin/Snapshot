@@ -97,5 +97,26 @@ namespace Snapshot
                         entries.Add(new Tuple<string, string>(match.Groups["permissions"].Value, match.Groups["file"].Value));
             return entries;
         }
+
+        internal static void OpenInternetExplorerTabs(List<string> urls)
+        {
+            if (urls.Any())
+            {
+                var ie = new SHDocVw.InternetExplorer();
+                ie.Navigate2(urls[0]);
+                for (var i = 1; i < urls.Count; i++)
+                    ie.Navigate2(urls[i], 0x800);
+                ie.Visible = true;
+            }
+        }
+
+        internal static List<string> GetInternetExplorerUrls()
+        {
+            var list = new List<string>();
+            foreach (SHDocVw.InternetExplorer ieInst in new SHDocVw.ShellWindowsClass())
+                if (!ieInst.LocationURL.StartsWith("file://"))
+                    list.Add(ieInst.LocationURL);
+            return list;
+        }
     }
 }

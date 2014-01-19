@@ -150,7 +150,7 @@ namespace Snapshot
                                 else
                                     map[key] = files;
                             }
-                            var cfg = new ProjectConfig(map);
+                            var cfg = new ProjectConfig(map, Operations.GetInternetExplorerUrls());
                             await TaskEx.WhenAll(tasks);
                             using (var file = File.Open(configFile.FullName, FileMode.Create))
                             using (var writer = new StreamWriter(file))
@@ -196,7 +196,8 @@ namespace Snapshot
                         break;
                     case DialogResult.OK:
                         {
-                            foreach (var entry in new ProjectConfig(openDialog.FileName).Processes)
+                            var project = new ProjectConfig(openDialog.FileName);
+                            foreach (var entry in project.Processes)
                             {
                                 switch (entry.Key.Substring(entry.Key.LastIndexOf(Path.DirectorySeparatorChar) + 1).ToLower())
                                 {
@@ -205,6 +206,7 @@ namespace Snapshot
                                         break;
                                 }
                             }
+                            Operations.OpenInternetExplorerTabs(project.IeTabUrls);
                             StartSplash();
                         }
                         break;
