@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Management;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -13,6 +14,17 @@ namespace Snapshot
 {
     internal static class Operations
     {
+        private const UInt32 WM_CLOSE = 0x0010;
+
+        public delegate bool EnumThreadDelegate(IntPtr hWnd, IntPtr lParam);
+
+        [DllImport("user32.dll")]
+        static extern bool EnumThreadWindows(uint dwThreadId, EnumThreadDelegate lpfn, IntPtr lParam);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        static extern bool PostMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
+
         internal static Task<Tuple<int, string>> GetOutput(string processFileName, string arguments)
         {
             var startInfo = new ProcessStartInfo();
@@ -74,10 +86,29 @@ namespace Snapshot
             return "";
         }
 
-        internal static List<string> GetOpenedProcesses()
+        internal static List<Tuple<string, Action>> GetOpenedProcesses()
         {
+            var processes = Process.GetProcesses().Where(result => !string.IsNullOrWhiteSpace(result.MainWindowTitle));
+            Action<Process> close = proc =>
+            {
+                if (proc.MainWindowHandle == IntPtr.Zero)
+                {
+                    foreach (ProcessThread pt in proc.Threads)
+                    {
+                        EnumThreadWindows((uint)pt.Id, new EnumThreadDelegate((IntPtr hWnd, IntPtr lParam) =>
+                        {
+                            PostMessage(hWnd, WM_CLOSE, IntPtr.Zero, IntPtr.Zero);
+                            return true;
+                        }), IntPtr.Zero);
+                    }
+                }
+                else if (proc.CloseMainWindow())
+                {
+                    proc.Close();
+                }
+            };
             //MainWindowTitle is null if the application does not have a window
-            return Process.GetProcesses().Where(result => !string.IsNullOrWhiteSpace(result.MainWindowTitle)).Select(result => result.ExecutablePath()).ToList();
+            return new List<Tuple<string, Action>>(processes.Select(result => new Tuple<string, Action>(result.ExecutablePath(), () => close(result))).ToList());
         }
 
         internal static async Task<List<Tuple<string, string>>> GetFilesOpenedByProcess(string processName)

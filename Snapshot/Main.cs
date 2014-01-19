@@ -78,7 +78,7 @@ namespace Snapshot
             e.Graphics.DrawString(output, e.Font, brush, pos, e.Bounds.Top);
         }
 
-        private async Task SaveProject(bool saveToDropbox, FileInfo configFile, DirectoryInfo dataDirectory)
+        private async Task SaveProject(bool saveToDropbox, bool closeAfter, FileInfo configFile, DirectoryInfo dataDirectory)
         {
             if (saveToDropbox)
             {
@@ -89,13 +89,15 @@ namespace Snapshot
 
             var sameNameFiles = new Dictionary<string, int>();
             var tasks = new List<Task>();
-            var operations = Operations.GetOpenedProcesses().Select(process => new Tuple<string, Task<List<Tuple<string, string>>>>(process, Operations.GetFilesOpenedByProcess(process.Substring(process.LastIndexOf(Path.DirectorySeparatorChar) + 1))));
-            var map = new Dictionary<string, List<String>>();
+            var processes = Operations.GetOpenedProcesses();
+            var operations = processes.Select(process => new Tuple<string, Task<List<Tuple<string, string>>>, Action>(process.Item1, Operations.GetFilesOpenedByProcess(process.Item1.Substring(process.Item1.LastIndexOf(Path.DirectorySeparatorChar) + 1)), process.Item2));
+            var processOpenedFiles = new Dictionary<string, List<String>>();
+            var close = new Dictionary<string, List<Action>>();
 
             foreach (var op in operations)
             {
                 tasks.Add(op.Item2);
-                var key = op.Item1;
+                var key = op.Item1.ToLower();
                 var files = (await op.Item2).Select(result => result.Item2).ToList();
                 for (var i = 0; i < files.Count; i++)
                 {
@@ -119,17 +121,27 @@ namespace Snapshot
                             tasks.Add(source.CopyToAsync(destination));
                     }
                 }
-                if (map.ContainsKey(key))
-                    map[key].AddRange(files);
+                if (processOpenedFiles.ContainsKey(key))
+                    processOpenedFiles[key].AddRange(files);
                 else
-                    map[key] = files;
+                    processOpenedFiles[key] = files;
+                if (close.ContainsKey(key))
+                    close[key].Add(op.Item3);
+                else
+                    close[key] = new List<Action>() { op.Item3 };
             }
-            map.RemoveRange(ApplicationConfig.Instance.ExcludedProcesses);
-            var cfg = new ProjectConfig(map, Operations.GetInternetExplorerUrls());
+            processOpenedFiles = processOpenedFiles.Where(entry => !ApplicationConfig.Instance.ExcludedProcesses.Contains(entry.Key.Substring(entry.Key.LastIndexOf(Path.DirectorySeparatorChar) + 1))).ToDictionary(p => p.Key, p => p.Value);
+            close = close.Where(entry => !ApplicationConfig.Instance.ExcludedProcesses.Contains(entry.Key.Substring(entry.Key.LastIndexOf(Path.DirectorySeparatorChar) + 1))).ToDictionary(p => p.Key, p => p.Value);
+            var cfg = new ProjectConfig(processOpenedFiles, Operations.GetInternetExplorerUrls());
             await TaskEx.WhenAll(tasks);
             using (var file = File.Open(configFile.FullName, FileMode.Create))
             using (var writer = new StreamWriter(file))
                 writer.Write(cfg.ToJson().ToString());
+
+            if (closeAfter)
+                foreach (var entry in close)
+                    foreach (var closeAction in entry.Value)
+                        closeAction();
         }
 
         private void btnSaveProject_Click(object sender, EventArgs e)
@@ -178,7 +190,7 @@ namespace Snapshot
                     case DialogResult.Yes:
                     case DialogResult.OK:
                         //TODO: buttonless modal over save file dialog instead of blocking UI thread
-                        TaskEx.Run(() => SaveProject(saveToDropbox, configFile, dataDirectory)).Wait();
+                        TaskEx.Run(() => SaveProject(saveToDropbox, checkBox1.Checked, configFile, dataDirectory)).Wait();
                         StartSplash();
                         break;
                     case DialogResult.No:
