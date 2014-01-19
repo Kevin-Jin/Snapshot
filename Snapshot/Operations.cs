@@ -86,29 +86,30 @@ namespace Snapshot
             return "";
         }
 
+        internal static void CloseWindow(this Process proc)
+        {
+            if (proc.MainWindowHandle == IntPtr.Zero)
+            {
+                foreach (ProcessThread pt in proc.Threads)
+                {
+                    EnumThreadWindows((uint)pt.Id, new EnumThreadDelegate((IntPtr hWnd, IntPtr lParam) =>
+                    {
+                        PostMessage(hWnd, WM_CLOSE, IntPtr.Zero, IntPtr.Zero);
+                        return true;
+                    }), IntPtr.Zero);
+                }
+            }
+            else if (proc.CloseMainWindow())
+            {
+                proc.Close();
+            }
+        }
+
         internal static List<Tuple<string, Action>> GetOpenedProcesses()
         {
-            var processes = Process.GetProcesses().Where(result => !string.IsNullOrWhiteSpace(result.MainWindowTitle));
-            Action<Process> close = proc =>
-            {
-                if (proc.MainWindowHandle == IntPtr.Zero)
-                {
-                    foreach (ProcessThread pt in proc.Threads)
-                    {
-                        EnumThreadWindows((uint)pt.Id, new EnumThreadDelegate((IntPtr hWnd, IntPtr lParam) =>
-                        {
-                            PostMessage(hWnd, WM_CLOSE, IntPtr.Zero, IntPtr.Zero);
-                            return true;
-                        }), IntPtr.Zero);
-                    }
-                }
-                else if (proc.CloseMainWindow())
-                {
-                    proc.Close();
-                }
-            };
             //MainWindowTitle is null if the application does not have a window
-            return new List<Tuple<string, Action>>(processes.Select(result => new Tuple<string, Action>(result.ExecutablePath(), () => close(result))).ToList());
+            var processes = Process.GetProcesses().Where(result => !string.IsNullOrWhiteSpace(result.MainWindowTitle));
+            return new List<Tuple<string, Action>>(processes.Select(result => new Tuple<string, Action>(result.ExecutablePath(), result.CloseWindow)).ToList());
         }
 
         internal static async Task<List<Tuple<string, string>>> GetFilesOpenedByProcess(string processName)

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -139,23 +140,27 @@ namespace Snapshot
                 writer.Write(cfg.ToJson().ToString());
 
             if (closeAfter)
+            {
                 foreach (var entry in close)
                     foreach (var closeAction in entry.Value)
                         closeAction();
+                foreach (var proc in Process.GetProcesses().Where(result => result.ProcessName.ToLower() == "iexplore"))
+                    proc.CloseWindow();
+            }
         }
 
         private void btnSaveProject_Click(object sender, EventArgs e)
         {
             bool saveToDropbox = false;
             new DirectoryInfo(Environment.ExpandEnvironmentVariables(ApplicationConfig.Instance.Folder)).Create();
-            DialogResult diagResult;
+            DialogResult? diagResult = null;
             FileInfo configFile = null;
             DirectoryInfo dataDirectory = null;
             using (var saveDialog = new SaveFileDialog())
             {
                 saveDialog.InitialDirectory = Environment.ExpandEnvironmentVariables(ApplicationConfig.Instance.Folder);
                 saveDialog.Title = "Where do you want to store the JSON project config and its data folder?";
-                saveDialog.FileName = "Snapshot project " + DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss");
+                saveDialog.FileName = "Snapshot project";
                 saveDialog.Filter = "JSON project config (*.json)|*.json";
                 saveDialog.OverwritePrompt = false;
                 saveDialog.FileOk += (s, ea) =>
@@ -185,7 +190,9 @@ namespace Snapshot
                     ApplicationConfig.Instance.PushRecentProject(configFile.FullName);
                     ReloadRecentProjects();
                 };
-                switch (saveDialog.ShowDialog())
+                var saveDiagResult = saveDialog.ShowDialog();
+                diagResult = diagResult ?? saveDiagResult;
+                switch (diagResult)
                 {
                     case DialogResult.Yes:
                     case DialogResult.OK:
@@ -203,7 +210,7 @@ namespace Snapshot
         private void btnOpenProject_Click(object sender, EventArgs e)
         {
             bool loadFromDropbox = false;
-            DialogResult diagResult;
+            DialogResult? diagResult = null;
             using (var openDialog = new OpenFileDialog())
             {
                 openDialog.InitialDirectory = Environment.ExpandEnvironmentVariables(ApplicationConfig.Instance.Folder);
@@ -223,7 +230,8 @@ namespace Snapshot
                         }
                     }
                 };
-                diagResult = openDialog.ShowDialog();
+                var openDiagResult = openDialog.ShowDialog();
+                diagResult = diagResult ?? openDiagResult;
                 switch (diagResult)
                 {
                     case DialogResult.Cancel:
@@ -244,8 +252,6 @@ namespace Snapshot
                 timer.Stop();
             }
         }
-
-        
     }
 
     internal static class SnapshotExtensions
