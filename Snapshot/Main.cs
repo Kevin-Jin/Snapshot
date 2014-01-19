@@ -25,7 +25,7 @@ namespace Snapshot
         private void ReloadRecentProjects()
         {
             lstRecentProjects.Items.Clear();
-            lstRecentProjects.Items.AddRange(ApplicationConfig.Instance.RecentProjects.Select(str => str.Substring(str.LastIndexOf(Path.DirectorySeparatorChar) + 1, str.LastIndexOf(".") - str.LastIndexOf(Path.DirectorySeparatorChar) - 1)).ToArray());
+            lstRecentProjects.Items.AddRange(ApplicationConfig.Instance.RecentProjects.Select(str => str.Substring(str.LastIndexOf(Path.DirectorySeparatorChar) + 1, Math.Max(0, str.LastIndexOf(".")) - str.LastIndexOf(Path.DirectorySeparatorChar) - 1)).ToArray());
         }
 
         private void Main_Load(object sender, EventArgs e)
@@ -167,7 +167,7 @@ namespace Snapshot
                 {
                     configFile = new FileInfo(saveDialog.FileName);
                     var configFileExists = configFile.Exists;
-                    dataDirectory = new DirectoryInfo(saveDialog.FileName.Substring(0, saveDialog.FileName.LastIndexOf(".")) + "_data");
+                    dataDirectory = new DirectoryInfo(saveDialog.FileName.Substring(0, Math.Max(0, saveDialog.FileName.LastIndexOf("."))) + "_data");
                     var dataDirectoryExists = dataDirectory.Exists;
                     string msg = null;
                     if (configFileExists)
@@ -220,7 +220,7 @@ namespace Snapshot
                 {
                     if (loadFromDropbox)
                     {
-                        var dataDirectory = new DirectoryInfo(openDialog.FileName.Substring(0, openDialog.FileName.LastIndexOf(".")) + "_data");
+                        var dataDirectory = new DirectoryInfo(openDialog.FileName.Substring(0, Math.Max(0, openDialog.FileName.LastIndexOf("."))) + "_data");
                         bool dataDirectoryExists = dataDirectory.Exists;
                         if (!dataDirectoryExists)
                         {
