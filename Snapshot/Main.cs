@@ -51,8 +51,6 @@ namespace Snapshot
                 MessageBox.Show("not implemented yet");
         }
 
-      
-
         private void lstRecentProjects_DrawItem(object sender, DrawItemEventArgs e)
         {
             string output = lstRecentProjects.Items[e.Index].ToString();

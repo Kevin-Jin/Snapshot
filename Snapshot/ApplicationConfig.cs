@@ -57,12 +57,12 @@ namespace Snapshot
 
         internal string GetRecent()
         {
-
+            return null;
         }
 
         internal void SetRecent(string recent)
         {
-            using (var file = File.OpenRead(jsonFile))
+            /*using (var file = File.OpenRead(jsonFile))
             using (var cfg = new StreamReader(file))
             {
                 var json = JObject.Parse(cfg.ReadToEnd());
@@ -72,7 +72,7 @@ namespace Snapshot
                         extensionsForProcess[association.Value<string>("process").ToLower()].AddRange(association.Value<JArray>("extensions").Select(result => ((string)result).ToLower()).ToList());
                     else
                         extensionsForProcess[association.Value<string>("process").ToLower()] = association.Value<JArray>("extensions").Select(result => ((string)result).ToLower()).ToList();
-            }
+            }*/
         }
 
         public override string ToString()
