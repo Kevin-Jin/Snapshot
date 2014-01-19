@@ -25,7 +25,7 @@ namespace Snapshot
         private void ReloadRecentProjects()
         {
             lstRecentProjects.Items.Clear();
-            lstRecentProjects.Items.AddRange(ApplicationConfig.Instance.RecentProjects.Select(str => str.Substring(str.LastIndexOf(Path.DirectorySeparatorChar) + 1)).ToArray());
+            lstRecentProjects.Items.AddRange(ApplicationConfig.Instance.RecentProjects.Select(str => str.Substring(str.LastIndexOf(Path.DirectorySeparatorChar) + 1, str.LastIndexOf(".") - str.LastIndexOf(Path.DirectorySeparatorChar) - 1)).ToArray());
         }
 
         private void Main_Load(object sender, EventArgs e)
