@@ -36,6 +36,26 @@ namespace Snapshot
 
         internal Dictionary<string, List<string>> ExtensionAssociations { get { return extensionsForProcess; } }
 
+        internal string GetRecent()
+        {
+
+        }
+
+        internal void SetRecent(string recent)
+        {
+            using (var file = File.OpenRead(jsonFile))
+            using (var cfg = new StreamReader(file))
+            {
+                var json = JObject.Parse(cfg.ReadToEnd());
+                folder = Environment.ExpandEnvironmentVariables(json.Value<string>("folderInsideDropbox"));
+                foreach (var association in json.Value<JArray>("associations"))
+                    if (extensionsForProcess.ContainsKey(association.Value<string>("process")))
+                        extensionsForProcess[association.Value<string>("process").ToLower()].AddRange(association.Value<JArray>("extensions").Select(result => ((string)result).ToLower()).ToList());
+                    else
+                        extensionsForProcess[association.Value<string>("process").ToLower()] = association.Value<JArray>("extensions").Select(result => ((string)result).ToLower()).ToList();
+            }
+        }
+
         public override string ToString()
         {
             return string.Join(", ", extensionsForProcess.Select(entry => ('(' + entry.Key + " => " + string.Join(", ", entry.Value) + ')')));

@@ -22,7 +22,7 @@ namespace Snapshot
 
         private void Main_Load(object sender, EventArgs e)
         {
-            lstRecentProjects.Items.Add("Biology Research");
+            
             lstRecentProjects.Items.Add("Aerospace Homework");
             lstRecentProjects.Items.Add("Snapshot");
             lstRecentProjects.Items.Add("Reddit Time");
@@ -51,10 +51,7 @@ namespace Snapshot
                 MessageBox.Show("not implemented yet");
         }
 
-        private void btnSettings_Click(object sender, EventArgs e)
-        {
-            new Form2().Show();
-        }
+      
 
         private void lstRecentProjects_DrawItem(object sender, DrawItemEventArgs e)
         {
@@ -102,6 +99,8 @@ namespace Snapshot
                         if (diagResult == DialogResult.Cancel)
                             ea.Cancel = true;
                     }
+
+                    lstRecentProjects.Items.Add(configFile.Name);
                 };
                 switch (saveDialog.ShowDialog())
                 {
