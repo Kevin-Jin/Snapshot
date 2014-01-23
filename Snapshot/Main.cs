@@ -15,7 +15,7 @@ namespace Snapshot
     public partial class Main : Form
     {
         private readonly Timer timer = new Timer();
-        private readonly Form2 f = new Form2();
+        private readonly Splash f = new Splash();
 
         public Main()
         {

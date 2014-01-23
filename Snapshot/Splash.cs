@@ -10,9 +10,9 @@ using System.Windows.Forms;
 
 namespace Snapshot
 {
-    public partial class Form2 : Form
+    public partial class Splash : Form
     {
-        public Form2()
+        public Splash()
         {
             InitializeComponent();
         }

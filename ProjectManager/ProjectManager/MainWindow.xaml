@@ -1,0 +1,49 @@
+﻿<Controls:MetroWindow x:Class="MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+    Title="" Height="584" Width="875" ResizeMode="CanMinimize" Background="#FFF9F9F9" ShowTitleBar="False">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="390*"/>
+            <RowDefinition Height="163*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="92*"/>
+            <ColumnDefinition Width="156*"/>
+            <ColumnDefinition Width="619*"/>
+        </Grid.ColumnDefinitions>
+        <Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="584" VerticalAlignment="Top" Width="875" Margin="0,0,-0,0" Grid.ColumnSpan="3" Grid.RowSpan="2">
+
+            <TabControl Margin="32,56,32,67">
+                <TabItem Header="Home">
+                    <Grid Background="#FFF9F9F9" Margin="20,-2,20,108" Height="268" VerticalAlignment="Bottom">
+                        <Button Content="Save new Project" HorizontalAlignment="Left" Margin="54,51,0,0" VerticalAlignment="Top" Width="200" Height="43" FontSize="14" FontWeight="Normal" FontFamily="Segoe UI Semibold"/>
+                        <Image HorizontalAlignment="Left" Margin="272,30,0,138" Width="250"/>
+                        <TextBlock HorizontalAlignment="Left" Height="29" Margin="420,65,0,0" TextWrapping="Wrap" Text="Save upon close?" VerticalAlignment="Top" Width="192" FontSize="24" Foreground="Black"/>
+
+                    </Grid>
+
+                </TabItem>
+                <TabItem Header="Dropbox">
+                    <Grid Background="#FFF9F9F9" Margin="20,-2,20,30"/>
+                </TabItem>
+                <TabItem Header="Settings" Background="#00000000">
+                    <Grid Background="#FFF9F9F9" Margin="20,-2,20,30"/>
+
+                </TabItem>
+                <TabItem Header="About&#xA;" Background="#00000000">
+                    <Grid Background="#FFF9F9F9" Margin="20,-2,20,30"/>
+
+                </TabItem>
+            </TabControl>
+
+        </Border>
+
+
+        <TextBlock Height="44" Margin="28,10,152,0" TextWrapping="Wrap" Text="Tab" VerticalAlignment="Top" FontSize="36" FontStyle="Italic" FontWeight="Bold" Foreground="#FFF9BB41" Grid.ColumnSpan="2"/>
+        <TextBlock Height="44" Margin="0,10,88,0" TextWrapping="Wrap" Text="bin" VerticalAlignment="Top" FontSize="36" FontWeight="Bold" Foreground="Black" Grid.Column="1"/>
+
+    </Grid>
+</Controls:MetroWindow>

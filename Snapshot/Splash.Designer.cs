@@ -1,6 +1,6 @@
 ﻿namespace Snapshot
 {
-    partial class Form2
+    partial class Splash
     {
         /// <summary>
         /// Required designer variable.
